@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <androidx.constraintlayout.widget.ConstraintLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/user_list_row_height"
+            xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:padding="@dimen/user_list_row_padding_all">
+
+        <ImageView
+                android:id="@+id/imgUserAvatar"
+                android:layout_width="@dimen/user_list_row_avatar_height"
+                android:layout_height="@dimen/user_list_row_avatar_height"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+                android:id="@+id/txtUserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Marcin Orlowski"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/imgUserAvatar"
+                style="@style/TextAppearance.AppCompat.Large"
+                android:layout_marginLeft="@dimen/user_list_row_text_margin_left"/>
+
+        <TextView
+                android:id="@+id/txtLocation"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Marcin Orlowski"
+                app:layout_constraintTop_toBottomOf="@id/txtUserName"
+                style="@style/TextAppearance.AppCompat.Small"
+                app:layout_constraintLeft_toLeftOf="@id/txtUserName"/>
+
+        <TextView
+                android:id="@+id/txtReputationLbl"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="@string/user_list_reputation"
+                app:layout_constraintTop_toBottomOf="@id/txtLocation"
+                style="@style/TextAppearance.AppCompat.Small"
+                app:layout_constraintLeft_toLeftOf="@id/txtLocation"/>
+
+
+        <TextView
+                android:id="@+id/txtReputation"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="232424"
+                app:layout_constraintTop_toBottomOf="@id/txtLocation"
+                style="@style/TextAppearance.AppCompat.Small"
+                app:layout_constraintLeft_toRightOf="@id/txtReputationLbl"
+                android:layout_marginLeft="@dimen/user_list_row_text_margin_left"
+                android:textStyle="bold"/>
+
+        <TextView
+                android:id="@+id/txtLastAccessLbl"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="@string/user_list_last_access"
+                app:layout_constraintTop_toBottomOf="@id/txtReputationLbl"
+                style="@style/TextAppearance.AppCompat.Small"
+                app:layout_constraintLeft_toLeftOf="@id/txtLocation" />
+
+        <TextView
+                android:id="@+id/txtLastAccess"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="04/11/2019"
+                app:layout_constraintTop_toBottomOf="@id/txtReputationLbl"
+                style="@style/TextAppearance.AppCompat.Small"
+                android:layout_marginLeft="@dimen/user_list_row_text_margin_left"
+                app:layout_constraintLeft_toRightOf="@id/txtLastAccessLbl" />
+
+
+        <ImageView
+            android:id="@+id/imgFavorite"
+            android:layout_width="@dimen/user_list_row_favorite_height"
+            android:layout_height="@dimen/user_list_row_favorite_height"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>

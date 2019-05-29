@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="user_list_row_padding_all">5dp</dimen>
+    <dimen name="user_list_row_height">100dp</dimen>
+    <dimen name="user_list_row_avatar_height">80dp</dimen>
+    <dimen name="user_list_row_favorite_height">30dp</dimen>
+    <dimen name="user_list_row_text_margin_left">10dp</dimen>
+
 </resources>

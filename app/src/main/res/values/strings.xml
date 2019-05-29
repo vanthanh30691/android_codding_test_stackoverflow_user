@@ -3,4 +3,7 @@
 
     <string name="header_stack_overflow_user">StackOverflow Users</string>
 
+    <string name="user_list_reputation">Reputation: </string>
+    <string name="user_list_last_access">Last Access Date: </string>
+
 </resources>
