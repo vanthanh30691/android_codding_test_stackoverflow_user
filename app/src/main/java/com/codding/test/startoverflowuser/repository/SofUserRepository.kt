@@ -6,9 +6,9 @@ import com.codding.test.startoverflowuser.network.respond.SoFUserRespond
 
 class SofUserRepository(private val apiService: ApiService) : NetWorkBaseRepository() {
 
-    suspend fun getSofUserData() : MutableList<SoFUser> {
+    suspend fun getSofUserData(page : Int, pageSize: Int) : MutableList<SoFUser> {
         val sofDataRespond = safeApiCall(
-            call = {apiService.getSofUser(1, 50).await()},
+            call = {apiService.getSofUser(page, pageSize).await()},
             errorMessage = "Get Sof user fail"
         )
 

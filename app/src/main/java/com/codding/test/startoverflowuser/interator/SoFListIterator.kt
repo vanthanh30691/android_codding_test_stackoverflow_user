@@ -20,14 +20,14 @@ class SoFListIterator {
 
 
     interface SofListListener {
-        fun onGetSoFListFinish(sofUser: MutableList<SoFUser>)
+        fun onGetSoFListSuccess(sofUser: MutableList<SoFUser>)
         fun onGetSoFListError()
     }
 
-    fun loadSoFUser(listener: SofListListener) {
+    fun loadSoFUser(page : Int, pageSize: Int, listener: SofListListener) {
         scope.launch {
-            var userList = repository.getSofUserData()
-            listener.onGetSoFListFinish(userList)
+            var userList = repository.getSofUserData(page, pageSize)
+            listener.onGetSoFListSuccess(userList)
         }
 
     }
