@@ -2,9 +2,14 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="user_list_row_padding_all">5dp</dimen>
-    <dimen name="user_list_row_height">100dp</dimen>
+    <dimen name="user_list_row_height">120dp</dimen>
     <dimen name="user_list_row_avatar_height">80dp</dimen>
     <dimen name="user_list_row_favorite_height">30dp</dimen>
     <dimen name="user_list_row_text_margin_left">10dp</dimen>
+
+
+    <dimen name="user_list_row_large_text_size">18sp</dimen>
+    <dimen name="user_list_row_normal_text_size">16sp</dimen>
+    <dimen name="user_list_row_small_text_size">14sp</dimen>
 
 </resources>
