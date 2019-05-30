@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.codding.test.startoverflowuser.interator.SoFListIterator
-import com.codding.test.startoverflowuser.network.respond.SoFUser
+import com.codding.test.startoverflowuser.modal.SoFUser
 import com.codding.test.startoverflowuser.screenstate.ScreenState
 import com.codding.test.startoverflowuser.screenstate.SoFListState
 

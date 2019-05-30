@@ -1,6 +1,5 @@
 package com.codding.test.startoverflowuser.ui.adapter
 
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -10,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.codding.test.startoverflowuser.R
 import com.codding.test.startoverflowuser.inflate
 import com.codding.test.startoverflowuser.listener.SofUserRowListener
-import com.codding.test.startoverflowuser.network.respond.SoFUser
+import com.codding.test.startoverflowuser.modal.SoFUser
 import com.squareup.picasso.Picasso
 
 class SofListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {

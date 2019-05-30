@@ -1,7 +1,7 @@
 package com.codding.test.startoverflowuser.interator
 
 import com.codding.test.startoverflowuser.network.ApiService
-import com.codding.test.startoverflowuser.network.respond.SoFUser
+import com.codding.test.startoverflowuser.modal.SoFUser
 import com.codding.test.startoverflowuser.repository.SofUserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

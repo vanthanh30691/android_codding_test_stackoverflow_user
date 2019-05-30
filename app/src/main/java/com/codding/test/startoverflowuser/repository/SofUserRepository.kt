@@ -1,8 +1,7 @@
 package com.codding.test.startoverflowuser.repository
 
 import com.codding.test.startoverflowuser.network.ApiService
-import com.codding.test.startoverflowuser.network.respond.SoFUser
-import com.codding.test.startoverflowuser.network.respond.SoFUserRespond
+import com.codding.test.startoverflowuser.modal.SoFUser
 
 class SofUserRepository(private val apiService: ApiService) : NetWorkBaseRepository() {
 
