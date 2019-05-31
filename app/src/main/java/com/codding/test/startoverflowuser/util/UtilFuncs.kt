@@ -4,6 +4,8 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import com.google.gson.GsonBuilder
+import java.util.*
 
 fun getConnectionType(context: Context): NetWorkConnectionState {
     var result = NetWorkConnectionState.NONE
@@ -30,4 +32,13 @@ fun getConnectionType(context: Context): NetWorkConnectionState {
         }
     }
     return result
+}
+
+fun getJsonPrettyData(data : Any) : String {
+    try {
+        return GsonBuilder().setPrettyPrinting().create().toJson(data)
+    } catch (ignored: Exception) {
+        AppLogger.error(ignored)
+    }
+    return ""
 }

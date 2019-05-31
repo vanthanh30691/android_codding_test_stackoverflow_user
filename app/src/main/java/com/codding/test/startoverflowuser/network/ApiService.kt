@@ -7,6 +7,11 @@ import okhttp3.OkHttpClient
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
+import javax.xml.datatype.DatatypeConstants.SECONDS
+import javax.xml.datatype.DatatypeConstants.MINUTES
+
+
 
 class ApiService  {
 

@@ -6,6 +6,13 @@
     <string name="user_list_reputation">Reputation: </string>
     <string name="user_list_last_access">Last Access Date: </string>
 
+    <string name="repo_list_reputation_type">Reputation Type </string>
+    <string name="repo_list_reputation_change">Reputation Change </string>
+    <string name="repo_list_reputation_create_at">Create At </string>
+    <string name="repo_list_reputation_pos_id">Post ID </string>
+
     <string name="error_no_internet_connection">No internet connection</string>
+    <string name="error_reached_end_off_data">You reached end of data list</string>
+    <string name="error_loadding_data">Error occurred when loading data, please try again later</string>
 
 </resources>

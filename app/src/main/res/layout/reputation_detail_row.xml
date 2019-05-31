@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:padding="@dimen/user_list_row_padding_all"
+        android:background="@drawable/sof_user_list_selector"
+        android:descendantFocusability="blocksDescendants"
+        android:clickable="true">
+
+         <TextView
+            android:id="@+id/txtRepoType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/repo_list_reputation_type"
+            app:layout_constraintTop_toTopOf="@id/imgRepoType"
+            app:layout_constraintBottom_toBottomOf="@id/imgRepoType"
+            android:textSize="@dimen/user_list_row_large_text_size"
+            app:layout_constraintRight_toLeftOf="@id/centerGuildLine"
+            android:paddingRight="@dimen/repo_list_items_padding_side"/>
+
+    <ImageView
+            android:id="@+id/imgRepoType"
+            android:layout_width="@dimen/repo_list_repo_type_size"
+            android:layout_height="@dimen/repo_list_repo_type_size"
+            app:layout_constraintLeft_toRightOf="@id/centerGuildLine"
+            android:paddingRight="@dimen/repo_list_items_padding_side"
+            android:layout_marginLeft="@dimen/repo_list_items_padding_side"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textStyle="bold"
+            android:background="@drawable/favorite_checked"/>
+
+    <TextView
+            android:id="@+id/txtRepoChange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/repo_list_reputation_change"
+            app:layout_constraintTop_toBottomOf="@id/txtRepoType"
+            android:textSize="@dimen/user_list_row_large_text_size"
+            app:layout_constraintRight_toLeftOf="@id/centerGuildLine"
+            android:paddingRight="@dimen/repo_list_items_padding_side"/>
+
+    <TextView
+            android:id="@+id/txtRepoChangeValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10000"
+            android:textSize="@dimen/user_list_row_large_text_size"
+            app:layout_constraintLeft_toRightOf="@id/centerGuildLine"
+            android:paddingRight="@dimen/repo_list_items_padding_side"
+            app:layout_constraintBaseline_toBaselineOf="@id/txtRepoChange"
+            android:layout_marginLeft="@dimen/repo_list_items_padding_side"
+            android:textStyle="bold"/>
+
+    <TextView
+            android:id="@+id/txtRepoCreate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/repo_list_reputation_create_at"
+            app:layout_constraintTop_toBottomOf="@id/txtRepoChange"
+            android:textSize="@dimen/user_list_row_large_text_size"
+            app:layout_constraintRight_toLeftOf="@id/centerGuildLine"
+            android:paddingRight="@dimen/repo_list_items_padding_side"/>
+
+    <TextView
+            android:id="@+id/txtRepoCreateValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="May 05 2019"
+            android:textSize="@dimen/user_list_row_large_text_size"
+            app:layout_constraintLeft_toRightOf="@id/centerGuildLine"
+            android:paddingRight="@dimen/repo_list_items_padding_side"
+            app:layout_constraintBaseline_toBaselineOf="@id/txtRepoCreate"
+            android:layout_marginLeft="@dimen/repo_list_items_padding_side"
+            android:textStyle="bold"/>
+
+    <TextView
+            android:id="@+id/txtRepoPostId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/repo_list_reputation_pos_id"
+            app:layout_constraintTop_toBottomOf="@id/txtRepoCreate"
+            android:textSize="@dimen/user_list_row_large_text_size"
+            app:layout_constraintRight_toLeftOf="@id/centerGuildLine"
+            android:paddingRight="@dimen/repo_list_items_padding_side"/>
+
+    <TextView
+            android:id="@+id/txtRepoPostIdValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="123123123"
+            android:textSize="@dimen/user_list_row_large_text_size"
+            app:layout_constraintLeft_toRightOf="@id/centerGuildLine"
+            android:paddingRight="@dimen/repo_list_items_padding_side"
+            app:layout_constraintBaseline_toBaselineOf="@id/txtRepoPostId"
+            android:layout_marginLeft="@dimen/repo_list_items_padding_side"
+            android:textStyle="bold"/>
+
+
+    <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/centerGuildLine"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+    app:layout_constraintGuide_percent="0.5"
+    android:orientation="vertical"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

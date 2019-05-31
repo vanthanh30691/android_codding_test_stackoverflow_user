@@ -2,11 +2,10 @@ package com.codding.test.startoverflowuser.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.constraintlayout.solver.widgets.ConstraintAnchor
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +19,7 @@ import com.codding.test.startoverflowuser.viewmodal.SoFListViewModal
 import com.codding.test.startoverflowuser.viewmodal.SoFListViewModalFactory
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.codding.test.startoverflowuser.R;
+import com.codding.test.startoverflowuser.util.AppLogger
 import com.codding.test.startoverflowuser.util.Constant
 import com.codding.test.startoverflowuser.util.NetWorkConnectionState
 import com.codding.test.startoverflowuser.util.getConnectionType
@@ -37,8 +37,9 @@ class MainActivity : AppCompatActivity() {
 
     // Variable items
     private lateinit var sofListAdapter : SofListAdapter
-    private var isFetchingData  = false
+    private var isFetchingMoreData  = false
     private var lastConnectionType = NetWorkConnectionState.NONE
+    private var isFavoriteMode = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,8 +54,10 @@ class MainActivity : AppCompatActivity() {
 
 
         // Init variables
-        viewModal = ViewModelProviders.of(this, SoFListViewModalFactory(SoFListIterator()))[SoFListViewModal::class.java]
+        viewModal = ViewModelProviders.of(this,
+            SoFListViewModalFactory(SoFListIterator(application)))[SoFListViewModal::class.java]
         viewModal.sofListState.observe(::getLifecycle, ::updateUI)
+
         sofListAdapter = SofListAdapter()
 
         // Setup listener
@@ -62,12 +65,13 @@ class MainActivity : AppCompatActivity() {
             fetchMoreData()
             swipeRefreshLayout.isRefreshing = false
         }
-        favoriteButton.setOnClickListener { }
+        favoriteButton.setOnClickListener { toogleFavoriteMode() }
         sofListAdapter.setUserRowListener(object : SofUserRowListener {
             override fun onUserClicked(position: Int) {
             }
 
             override fun onUserFavoritedTogle(position: Int) {
+                toogleUserFafovirteAt(position)
             }
         })
 
@@ -83,13 +87,44 @@ class MainActivity : AppCompatActivity() {
 
         initScrollListener()
         fetchMoreData()
+    }
 
+    private fun toogleFavoriteMode() {
+        AppLogger.debug(this, "toogleFavoriteMode")
+        AppLogger.debug(this, isFavoriteMode)
+
+        isFavoriteMode = !isFavoriteMode
+        // Reset adapter data
+        sofListAdapter.toogleAdapterMode(isFavoriteMode)
+
+        if (isFavoriteMode) {
+            favoriteButton.setImageResource(R.drawable.favorite_checked)
+            viewModal.getFavoriteUser()
+        } else {
+            favoriteButton.setImageResource(R.drawable.favorite)
+            fetchMoreData()
+        }
+    }
+
+    private fun toogleUserFafovirteAt(position: Int) {
+        AppLogger.debug(this, "toogleUserFafovirteAt")
+        AppLogger.debug(this, position)
+
+        var sofUser = sofListAdapter.getItemAt(position)
+        sofUser?. let {
+            viewModal.toogleFavoriteState(sofUser)
+        }
     }
 
     private fun fetchMoreData() {
+        AppLogger.debug(this, "fetchMoreData")
+
         lastConnectionType = getConnectionType(this)
         when(lastConnectionType) {
-            NetWorkConnectionState.NONE -> Toast.makeText(this, R.string.error_no_internet_connection, Toast.LENGTH_LONG).show()
+            NetWorkConnectionState.NONE -> {
+                isFetchingMoreData = false
+                Toast.makeText(this, R.string.error_no_internet_connection, Toast.LENGTH_LONG).show()
+            }
             NetWorkConnectionState.CELL -> viewModal.getSofUser(Constant.SOF_DATA_LOAD_PAGE_SIZE_ON_WIFI)
             NetWorkConnectionState.WIFI -> viewModal.getSofUser(Constant.SOF_DATA_LOAD_PAGE_SIZE)
         }
@@ -102,22 +137,44 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Controll UI State
+     */
     private fun processLoadDataState(sofListState : SoFListState) {
-        isFetchingData = false
-        hideLoadingScreen()
+        AppLogger.debug(this, "processLoadDataState")
+        AppLogger.debug(this, sofListState)
+
+        isFetchingMoreData = false
         when (sofListState) {
             SoFListState.LoadUserDone -> {
+                hideLoadingScreen()
                 var sofUser = viewModal.sofUser
                 sofListAdapter.addMoreData(sofUser)
+            }
+            // Build favorite list first
+            SoFListState.LoadFavoriteListDone -> {
+                sofListAdapter.buildFavoriteList(viewModal.favoriteSofUserIdList)
+            }
+
+            SoFListState.ReachedOutOfData -> {
+                hideLoadingScreen()
+                Toast.makeText(this, R.string.error_reached_end_off_data, Toast.LENGTH_SHORT).show()
+            }
+
+            SoFListState.LoadUserError -> {
+                hideLoadingScreen()
+                Toast.makeText(this, R.string.error_loadding_data, Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private fun showingLoadingScreen() {
+        AppLogger.debug(this, "showingLoadingScreen")
         processBar.visibility = View.VISIBLE
     }
 
     private fun hideLoadingScreen() {
+        AppLogger.debug(this, "hideLoadingScreen")
         processBar.visibility = View.GONE
     }
 
@@ -130,23 +187,21 @@ class MainActivity : AppCompatActivity() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager?
-
-                if (!isFetchingData) {
+                // Only lazy load in online mode
+                if (!isFetchingMoreData && !isFavoriteMode) {
                     if (linearLayoutManager != null) {
 
                         var currentItemSize = sofListAdapter.itemCount
                         var lastItemPosition = linearLayoutManager.findLastCompletelyVisibleItemPosition()
                         var numberItemToReachBottom = currentItemSize - lastItemPosition
 
-                        Log.d("TEST", "numberItemToReachBottom: " + numberItemToReachBottom)
                         // In case user on wifi and there have Constant.SOF_DATA_BACKGROUND_LOAD_PADDING to reach bottom
                         // Fetch data in background or  in case data list reached bottom
                         if (numberItemToReachBottom <= 1
                             || (numberItemToReachBottom < Constant.SOF_DATA_BACKGROUND_LOAD_PADDING
                             && lastConnectionType == NetWorkConnectionState.WIFI)) {
-                            Log.d("TEST", "fetchMoreData: ")
                             fetchMoreData()
-                            isFetchingData = true
+                            isFetchingMoreData = true
                         }
                     }
                 }
@@ -154,4 +209,5 @@ class MainActivity : AppCompatActivity() {
         })
 
     }
+
 }

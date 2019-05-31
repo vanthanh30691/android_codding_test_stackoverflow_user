@@ -6,4 +6,7 @@ import com.google.gson.annotations.SerializedName
 class SoFUserRespond {
     @SerializedName("items")
     var sofUserList : List<SoFUser> = emptyList()
+    @SerializedName("has_more")
+    var hasMore : Boolean = true
+
 }

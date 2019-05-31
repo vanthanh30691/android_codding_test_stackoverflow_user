@@ -1,5 +1,6 @@
 package com.codding.test.startoverflowuser.screenstate
 
 enum class SoFListState {
-    StartLoadNewUser, LoadUserDone, LoadUserError
+    StartLoadNewUser, LoadUserDone, LoadUserError, LoadFavoriteListDone,
+    ReachedOutOfData
 }
