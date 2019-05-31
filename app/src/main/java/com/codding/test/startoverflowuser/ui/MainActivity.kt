@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProviders
@@ -16,24 +17,25 @@ import com.codding.test.startoverflowuser.screenstate.ScreenState
 import com.codding.test.startoverflowuser.screenstate.SoFListState
 import com.codding.test.startoverflowuser.ui.adapter.SofListAdapter
 import com.codding.test.startoverflowuser.viewmodal.SoFListViewModal
-import com.codding.test.startoverflowuser.viewmodal.SoFListViewModalFactory
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.codding.test.startoverflowuser.R;
+import com.codding.test.startoverflowuser.ui.adapter.RVEmptyObserver
 import com.codding.test.startoverflowuser.util.AppLogger
 import com.codding.test.startoverflowuser.util.Constant
 import com.codding.test.startoverflowuser.util.NetWorkConnectionState
 import com.codding.test.startoverflowuser.util.getConnectionType
-import kotlinx.android.synthetic.main.content_main.*
+import com.codding.test.startoverflowuser.viewmodal.SoFListViewModalFactory
+import kotlinx.android.synthetic.main.bacsic_recycler_view_content.*
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     // View groups item
     private lateinit var viewModal : SoFListViewModal
-    private lateinit var processBar : ProgressBar
     private lateinit var favoriteButton : FloatingActionButton
     private lateinit var sofListView : RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var emptyView : TextView
 
     // Variable items
     private lateinit var sofListAdapter : SofListAdapter
@@ -45,11 +47,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setupProgessBar()
 
         // Inflate view
-        processBar = findViewById(R.id.processBar)
         favoriteButton = findViewById(R.id.fab)
         sofListView = findViewById(R.id.recyViewSofList)
+        emptyView = findViewById(R.id.emptyView)
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
 
 
@@ -62,8 +65,8 @@ class MainActivity : AppCompatActivity() {
 
         // Setup listener
         swipeRefreshLayout.setOnRefreshListener {
-            fetchMoreData()
-            swipeRefreshLayout.isRefreshing = false
+            sofListAdapter.getData().clear()
+            viewModal.refreshData(isFavoriteMode)
         }
         favoriteButton.setOnClickListener { toogleFavoriteMode() }
         sofListAdapter.setUserRowListener(object : SofUserRowListener {
@@ -78,6 +81,7 @@ class MainActivity : AppCompatActivity() {
         // Setup view/variable state
         sofListView.layoutManager = LinearLayoutManager(this)
         sofListView.adapter = sofListAdapter
+        sofListAdapter.registerAdapterDataObserver(RVEmptyObserver(sofListView, emptyView))
 
 
         // Setup header title
@@ -87,6 +91,10 @@ class MainActivity : AppCompatActivity() {
 
         initScrollListener()
         fetchMoreData()
+    }
+
+    override fun setupProgessBar() {
+        processBar = findViewById(R.id.processBar)
     }
 
     private fun toogleFavoriteMode() {
@@ -145,6 +153,8 @@ class MainActivity : AppCompatActivity() {
         AppLogger.debug(this, sofListState)
 
         isFetchingMoreData = false
+        swipeRefreshLayout.isRefreshing = false
+
         when (sofListState) {
             SoFListState.LoadUserDone -> {
                 hideLoadingScreen()
@@ -168,15 +178,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showingLoadingScreen() {
-        AppLogger.debug(this, "showingLoadingScreen")
-        processBar.visibility = View.VISIBLE
-    }
-
-    private fun hideLoadingScreen() {
-        AppLogger.debug(this, "hideLoadingScreen")
-        processBar.visibility = View.GONE
-    }
 
     private fun initScrollListener() {
         recyViewSofList.addOnScrollListener(object : RecyclerView.OnScrollListener() {

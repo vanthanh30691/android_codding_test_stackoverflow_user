@@ -12,14 +12,17 @@ class SoFListViewModal (private val sofInterator: SoFListIterator) : ViewModel()
 
     // Variables to controlled loaded data
     var currentPage = 1
+    // Cache last load page size to refresh data
+    var lastLoadedPageSize = 1
 
     // Variables to controlled loaded data
     var favoriteSofUserIdList : List<String> = emptyList()
 
     // Screen state to communicate with Views
-    private val _sofListState = MutableLiveData<ScreenState<SoFListState>>()
+    val _sofListState = MutableLiveData<ScreenState<SoFListState>>()
     val sofListState : LiveData<ScreenState<SoFListState>>
             get() = _sofListState
+
     var sofUser : MutableList<SoFUser> = mutableListOf()
 
     init {
@@ -36,6 +39,14 @@ class SoFListViewModal (private val sofInterator: SoFListIterator) : ViewModel()
 
         _sofListState.value = ScreenState.Loading
         sofInterator.loadSoFUser(currentPage, pageSize, this)
+        lastLoadedPageSize = pageSize
+
+    }
+
+    fun refreshData(favoriteMode : Boolean) {
+        currentPage = 1
+        if (favoriteMode) getFavoriteUser()
+        else getSofUser(lastLoadedPageSize)
     }
 
     fun toogleFavoriteState(sofUser : SoFUser) {
@@ -66,7 +77,7 @@ class SoFListViewModal (private val sofInterator: SoFListIterator) : ViewModel()
         currentPage ++
     }
 
-    override fun onGetSoFListError(errorCode : Int, exception: Exception) {
+    override fun onGetDataError(errorCode : Int, exception: Exception) {
         AppLogger.debug(this, "onGetSoFListError")
         _sofListState.postValue(ScreenState.Render(SoFListState.LoadUserError))
 

@@ -15,6 +15,15 @@ object RoomConstant {
 }
 
 object ApiConstant {
+    const val API_DEFAULT_SITE_PARAMETER = "stackoverflow"
+    const val API_SITE_PARAMETER = "site"
+    const val API_PAGE_PARAMETER = "page"
+    const val API_PAGESIZE_PARAMETER = "pagesize"
+
+    const val API_GET_SOF_USER = "users"
+    const val API_USER_REPUTATIONS = "users/{user_id}/reputation-history"
+    const val API_USER_REPUTATIONS_INPUT_PATH = "user_id"
+
     const val JSON_FIELD_USER_ID = "user_id"
     const val JSON_FIELD_USER_NAME = "display_name"
     const val JSON_FIELD_LOCATION = "location"

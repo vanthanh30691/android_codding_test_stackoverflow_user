@@ -7,7 +7,7 @@ import com.codding.test.startoverflowuser.util.ApiConstant
 import com.codding.test.startoverflowuser.util.RoomConstant
 import com.google.gson.annotations.SerializedName
 
-class RepoData {
+class Reputation {
 
     @SerializedName(ApiConstant.JSON_FIELD_REPU_TYPE)
     var repuType = ""

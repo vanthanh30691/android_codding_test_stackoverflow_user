@@ -3,20 +3,13 @@ package com.codding.test.startoverflowuser.ui.adapter
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.codding.test.startoverflowuser.R
 import com.codding.test.startoverflowuser.inflate
-import com.codding.test.startoverflowuser.listener.SofUserRowListener
-import com.codding.test.startoverflowuser.modal.RepoData
-import com.codding.test.startoverflowuser.modal.SoFUser
-import com.codding.test.startoverflowuser.util.TimeConstant
-import com.squareup.picasso.Picasso
-import java.text.SimpleDateFormat
-import java.util.*
+import com.codding.test.startoverflowuser.modal.Reputation
 
-class RepoListAdapter : BaseLoadingListAdapter <RepoData>() {
+class RepoListAdapter : BaseLoadingListAdapter <Reputation>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if (viewType == VIEW_TYPE_ROW) {

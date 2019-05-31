@@ -58,7 +58,7 @@ abstract class  BaseLoadingListAdapter<T> : RecyclerView.Adapter<RecyclerView.Vi
             dataList.removeAt(dataList.size - 1)
         }
         dataList.addAll(data)
-        dataList.add(null)
+        if (data.size > 0) dataList.add(null)
         notifyDataSetChanged()
     }
 
@@ -89,4 +89,5 @@ abstract class  BaseLoadingListAdapter<T> : RecyclerView.Adapter<RecyclerView.Vi
     class LoadingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var loadingView = itemView.findViewById<ProgressBar>(R.id.progressBar)
     }
+
 }

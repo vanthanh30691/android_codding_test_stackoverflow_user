@@ -58,7 +58,7 @@ dependencies {
     api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$rootProject.coroutines"
 
     //Picasso for Image Loading
-    implementation ("com.squareup.picasso:picasso:$picassoVersion"){
+    implementation("com.squareup.picasso:picasso:$picassoVersion") {
         exclude group: "com.android.support"
     }
 

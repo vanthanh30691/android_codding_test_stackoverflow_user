@@ -6,7 +6,7 @@
         android:layout_height="match_parent"
         tools:context=".ui.MainActivity">
 
-    <include layout="@layout/content_main"/>
+    <include layout="@layout/bacsic_recycler_view_content"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"

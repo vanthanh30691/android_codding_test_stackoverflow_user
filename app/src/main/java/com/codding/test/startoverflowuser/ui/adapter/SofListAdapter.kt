@@ -17,8 +17,6 @@ import java.util.*
 
 class SofListAdapter : BaseLoadingListAdapter <SoFUser>() {
 
-    private var sofUserRowListener : SofUserRowListener? = null
-
     var favoriteList : MutableSet<String> = mutableSetOf()
     var isFavoriteMode = false
 
@@ -30,13 +28,13 @@ class SofListAdapter : BaseLoadingListAdapter <SoFUser>() {
 
             // Binding click action to row
             viewHolder.itemView.setOnClickListener {
-                sofUserRowListener?.let {
+                getUserClickListener()?.let {
                     it.onUserClicked(viewHolder.adapterPosition)
                 }
             }
             // Binding favorite toggle action to row
             viewHolder.favorite.setOnClickListener {
-                sofUserRowListener?.let {
+                getUserClickListener()?.let {
                     it.onUserFavoritedTogle(viewHolder.adapterPosition)
                 }
             }
