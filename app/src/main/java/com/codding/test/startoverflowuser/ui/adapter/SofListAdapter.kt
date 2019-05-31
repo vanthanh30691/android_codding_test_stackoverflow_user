@@ -15,23 +15,12 @@ import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
 import java.util.*
 
-class SofListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class SofListAdapter : BaseLoadingListAdapter <SoFUser>() {
 
-    companion object {
-        val VIEW_TYPE_ROW = 0x01
-        val VIEW_TYPE_LOADING = 0x02
-    }
+    private var sofUserRowListener : SofUserRowListener? = null
 
-    // Data variables
-    var sofUser : MutableList<SoFUser?> = mutableListOf()
     var favoriteList : MutableSet<String> = mutableSetOf()
-
-    // Format time variables
-    var lastAccessTimeFormat = SimpleDateFormat(TimeConstant.LAST_ACCESS_TIME_FORMAT)
-    var lastAccessCalendar = Calendar.getInstance()
-
     var isFavoriteMode = false
-    var sofUserRowListener : SofUserRowListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
@@ -58,18 +47,15 @@ class SofListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     }
 
-    override fun getItemCount(): Int {
-        return sofUser.size
-    }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is SofListViewHodler) {
-            var currentUser = sofUser.get(position)
+            var currentUser = getData().get(position)
             currentUser?.let {
                 holder.location.text = it.location
                 holder.reputaions.text = it.reputation.toString()
                 holder.userName.text = it.userName
-                holder.updateAvatar(it.profileImg);
+                holder.updateAvatar(it.profileImg)
 
                 // Update favorite state
                 if (favoriteList.contains(currentUser.userId)) {
@@ -79,8 +65,7 @@ class SofListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 }
 
                 // Update last access date
-                lastAccessCalendar.timeInMillis = it.accessDate.toLong() * 1000 // (return data is in Second)
-                holder.accessDate.text = lastAccessTimeFormat.format(lastAccessCalendar.time)
+                holder.accessDate.text = getDisplayDate( it.accessDate.toLong())
 
             }
         } else if (holder is LoadingViewHolder) {
@@ -90,19 +75,9 @@ class SofListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     }
 
-    override fun getItemViewType(position: Int): Int {
-        if (sofUser.get(position) == null) {
-            return VIEW_TYPE_LOADING
-        }
-        return VIEW_TYPE_ROW
-    }
-
-    fun getItemAt(position: Int) : SoFUser? {
-        return sofUser.get(position)
-    }
 
     fun toogleAdapterMode(mode : Boolean) {
-        sofUser.clear()
+        getData().clear()
         notifyDataSetChanged()
         isFavoriteMode = mode
     }
@@ -119,27 +94,6 @@ class SofListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
 
-    /**
-     * Append more data at the end of list
-     */
-    fun addMoreData(data : MutableList<SoFUser>) {
-        // Remove loading view to append more data
-        if (sofUser.size > 0) {
-            sofUser.removeAt(sofUser.size - 1)
-        }
-        sofUser.addAll(data)
-        sofUser.add(null)
-        notifyDataSetChanged()
-    }
-
-    /**
-     * Add listener for row/favorite click
-     */
-    fun setUserRowListener(lsn : SofUserRowListener) {
-        sofUserRowListener = lsn
-    }
-
-
     class SofListViewHodler(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var favorite = itemView.findViewById<ImageView>(R.id.imgFavorite)
         var avartar = itemView.findViewById<ImageView>(R.id.imgUserAvatar)
@@ -148,13 +102,9 @@ class SofListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         var reputaions = itemView.findViewById<TextView>(R.id.txtReputation)
         var accessDate = itemView.findViewById<TextView>(R.id.txtLastAccess)
 
-
         fun updateAvatar(url: String) {
             Picasso.get().load(url).into(avartar)
         }
     }
 
-    class LoadingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var loadingView = itemView.findViewById<ProgressBar>(R.id.progressBar)
-    }
 }
