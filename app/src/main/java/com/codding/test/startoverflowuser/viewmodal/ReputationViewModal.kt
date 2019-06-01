@@ -25,7 +25,7 @@ class ReputationViewModal (private val reputationIterator: ReputationIterator) :
 
     fun getReputationList(userId : String, pageSize : Int) {
         AppLogger.debug(this, "getReputationList $userId $pageSize")
-        setState(ScreenState.Loading)
+        postState(ScreenState.Loading)
         reputationIterator.loadUserReputation(userId, getCurrentPage(), pageSize, this)
 
         lastPageSize = pageSize

@@ -34,7 +34,7 @@ class SoFListViewModal (private val sofInterator: SoFListIterator) : BaseViewMod
         AppLogger.debug(this, "getSofUser")
         AppLogger.debug(this, pageSize)
 
-        setState(ScreenState.Loading)
+        postState(ScreenState.Loading)
         sofInterator.loadSoFUser(getCurrentPage(), pageSize, this)
         lastLoadedPageSize = pageSize
 
@@ -57,7 +57,7 @@ class SoFListViewModal (private val sofInterator: SoFListIterator) : BaseViewMod
         AppLogger.debug(this, "getFavoriteUser")
 
         resetPage()
-        setState(ScreenState.Loading)
+        postState(ScreenState.Loading)
         sofInterator.getSofFavoriteUsers(this)
     }
 

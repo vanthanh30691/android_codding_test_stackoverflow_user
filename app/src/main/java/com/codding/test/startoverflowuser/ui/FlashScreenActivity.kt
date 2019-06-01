@@ -1,4 +1,4 @@
-package com.codding.test.startoverflowuser.ui.adapter
+package com.codding.test.startoverflowuser.ui
 
 import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
@@ -8,6 +8,7 @@ import com.codding.test.startoverflowuser.R
 import com.codding.test.startoverflowuser.eventbus.MessageEvent
 import com.codding.test.startoverflowuser.util.AppLogger
 import com.codding.test.startoverflowuser.util.EventMessage
+import com.codding.test.startoverflowuser.util.IntentCons
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -23,7 +24,7 @@ class FlashScreenActivity : AppCompatActivity() {
     override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
         // Close app if user want
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            setResult(Activity.RESULT_CANCELED)
+            setResult(IntentCons.INTENT_RESULT_EXIT_APP)
             finish()
         }
         return super.onKeyUp(keyCode, event)

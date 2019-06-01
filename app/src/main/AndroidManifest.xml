@@ -12,7 +12,7 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".ui.adapter.FlashScreenActivity"
+        <activity android:name=".ui.FlashScreenActivity"
                   android:theme="@style/Theme.Design.NoActionBar">
         </activity>
         <activity android:name=".ui.ReputationActivity">

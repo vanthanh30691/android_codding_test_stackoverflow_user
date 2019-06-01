@@ -14,12 +14,6 @@ open class BaseViewModal<T> : ViewModel() {
     val modalState : LiveData<ScreenState<T>>
         get() = _modalState
 
-    /**
-     * Change view modal state using setValues
-     */
-    protected fun setState(state : ScreenState<T>) {
-        _modalState.value = state
-    }
 
     protected fun postState(state : ScreenState<T>) {
         _modalState.postValue(state)

@@ -1,6 +1,5 @@
 package com.codding.test.startoverflowuser.ui
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
@@ -17,13 +16,10 @@ import com.codding.test.startoverflowuser.ui.adapter.SofListAdapter
 import com.codding.test.startoverflowuser.viewmodal.SoFListViewModal
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.codding.test.startoverflowuser.R;
-import com.codding.test.startoverflowuser.eventbus.MessageEvent
-import com.codding.test.startoverflowuser.ui.adapter.FlashScreenActivity
 import com.codding.test.startoverflowuser.ui.adapter.RVEmptyObserver
 import com.codding.test.startoverflowuser.util.*
 import com.codding.test.startoverflowuser.viewmodal.SoFListViewModalFactory
 import kotlinx.android.synthetic.main.bacsic_recycler_view_content.*
-import org.greenrobot.eventbus.EventBus
 
 
 class MainActivity : BaseActivity() {
@@ -38,8 +34,11 @@ class MainActivity : BaseActivity() {
     // Variable items
     private lateinit var sofListAdapter : SofListAdapter
     private var isFetchingMoreData  = false
-    private var lastConnectionType = NetWorkConnectionState.NONE
+
     private var isFavoriteMode = false
+    // Monitor current state and network state to reload data automatically when network on
+    private var  currentState : SoFListState = SoFListState.StartLoadNewUser
+    private var lastConnectionType = NetWorkConnectionState.NONE
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,8 +62,7 @@ class MainActivity : BaseActivity() {
 
         // Setup listener
         swipeRefreshLayout.setOnRefreshListener {
-            sofListAdapter.getData().clear()
-            viewModal.refreshData(isFavoriteMode)
+            refreshData()
         }
         favoriteButton.setOnClickListener { toogleFavoriteMode() }
         sofListAdapter.setUserRowListener(object : SofUserRowListener {
@@ -99,6 +97,19 @@ class MainActivity : BaseActivity() {
 
     override fun setupProgessBar() {
         processBar = findViewById(R.id.processBar)
+    }
+
+    override fun onNetworkAvailable() {
+        AppLogger.debug(this, "onNetworkAvailable $currentState")
+        when (currentState) {
+            // Resume load data again from fail states
+            SoFListState.LoadFavoriteListDone, SoFListState.LoadUserError ->  fetchMoreData()
+        }
+    }
+
+    private fun refreshData() {
+        sofListAdapter.getData().clear()
+        viewModal.refreshData(isFavoriteMode)
     }
 
     private fun toogleFavoriteMode() {
@@ -137,14 +148,19 @@ class MainActivity : BaseActivity() {
 
     private fun fetchMoreData() {
         AppLogger.debug(this, "fetchMoreData")
-
         lastConnectionType = getConnectionType(this)
+
+        AppLogger.debug(this, "$lastConnectionType")
         when(lastConnectionType) {
             NetWorkConnectionState.NONE -> {
                 isFetchingMoreData = false
+                currentState = SoFListState.LoadUserError
                 Toast.makeText(this, R.string.error_no_internet_connection, Toast.LENGTH_LONG).show()
             }
-            else -> viewModal.getSofUser(getPageSize())
+            else -> {
+                isFetchingMoreData = true
+                viewModal.getSofUser(getPageSize())
+            }
 
         }
     }
@@ -162,9 +178,10 @@ class MainActivity : BaseActivity() {
     private fun processLoadDataState(sofListState : SoFListState) {
         AppLogger.debug(this, "processLoadDataState")
         AppLogger.debug(this, sofListState)
-
         isFetchingMoreData = false
+
         swipeRefreshLayout.isRefreshing = false
+        currentState = sofListState
 
         when (sofListState) {
             SoFListState.LoadUserDone -> {
@@ -211,8 +228,8 @@ class MainActivity : BaseActivity() {
                         if (numberItemToReachBottom <= 1
                             || (numberItemToReachBottom < Constant.SOF_DATA_BACKGROUND_LOAD_PADDING
                             && lastConnectionType == NetWorkConnectionState.WIFI)) {
+                            AppLogger.debug(this, "onScrolled to end, load more data")
                             fetchMoreData()
-                            isFetchingMoreData = true
                         }
                     }
                 }
@@ -223,7 +240,7 @@ class MainActivity : BaseActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == IntentCons.INTENT_REQUEST_LOADDING_SCREEN && resultCode == Activity.RESULT_CANCELED) {
+        if (requestCode == IntentCons.INTENT_REQUEST_LOADDING_SCREEN && resultCode == IntentCons.INTENT_RESULT_EXIT_APP) {
             finish()
         }
     }

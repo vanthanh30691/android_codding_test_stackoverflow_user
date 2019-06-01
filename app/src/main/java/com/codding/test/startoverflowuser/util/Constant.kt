@@ -40,6 +40,7 @@ object ApiConstant {
 object IntentCons {
     const val INTENT_USER_ID = "user_id"
     const val INTENT_REQUEST_LOADDING_SCREEN = 0x01
+    const val INTENT_RESULT_EXIT_APP = 0x11
 }
 
 enum class NetWorkConnectionState {

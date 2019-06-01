@@ -12,6 +12,7 @@ import com.codding.test.startoverflowuser.R
 import com.codding.test.startoverflowuser.interator.ReputationIterator
 import com.codding.test.startoverflowuser.screenstate.ReputationState
 import com.codding.test.startoverflowuser.screenstate.ScreenState
+import com.codding.test.startoverflowuser.screenstate.SoFListState
 import com.codding.test.startoverflowuser.ui.adapter.RVEmptyObserver
 import com.codding.test.startoverflowuser.ui.adapter.RepuListAdapter
 import com.codding.test.startoverflowuser.util.*
@@ -32,6 +33,9 @@ class ReputationActivity : BaseActivity() {
     private lateinit var userId : String
     private var isFetchingMoreData  = false
     private var lastConnectionType = NetWorkConnectionState.NONE
+
+    // Monitor current state and network state to reload data automatically when network on
+    private var  currentState : ReputationState = ReputationState.StartLoadReputation
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,6 +85,14 @@ class ReputationActivity : BaseActivity() {
 
     }
 
+    override fun onNetworkAvailable() {
+        AppLogger.debug(this, "onNetworkAvailable $currentState")
+        when (currentState) {
+            // Resume load data again from fail states
+            ReputationState.LoadRepuError ->  fetchMoreData()
+        }
+    }
+
     private fun fetchMoreData() {
         AppLogger.debug(this, "fetchMoreData")
 
@@ -88,9 +100,13 @@ class ReputationActivity : BaseActivity() {
         when(lastConnectionType) {
             NetWorkConnectionState.NONE -> {
                 isFetchingMoreData = false
+                currentState = ReputationState.LoadRepuError
                 Toast.makeText(this, R.string.error_no_internet_connection, Toast.LENGTH_LONG).show()
             }
-            else -> viewModal.getReputationList(userId, getPageSize())
+            else -> {
+                isFetchingMoreData = true
+                viewModal.getReputationList(userId, getPageSize())
+            }
         }
     }
 
@@ -110,6 +126,7 @@ class ReputationActivity : BaseActivity() {
 
         isFetchingMoreData = false
         swipeRefreshLayout.isRefreshing = false
+        currentState = repuState
 
         when (repuState) {
             ReputationState.LoadRepuDone -> {
@@ -153,7 +170,7 @@ class ReputationActivity : BaseActivity() {
                             || (numberItemToReachBottom < Constant.SOF_DATA_BACKGROUND_LOAD_PADDING
                                     && lastConnectionType == NetWorkConnectionState.WIFI)) {
                             fetchMoreData()
-                            isFetchingMoreData = true
+
                         }
                     }
                 }
