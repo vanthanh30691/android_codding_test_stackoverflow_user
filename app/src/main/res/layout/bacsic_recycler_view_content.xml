@@ -37,7 +37,7 @@
             app:layout_constraintRight_toRightOf="parent">
 
         <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyViewSofList"
+                android:id="@+id/recyView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 

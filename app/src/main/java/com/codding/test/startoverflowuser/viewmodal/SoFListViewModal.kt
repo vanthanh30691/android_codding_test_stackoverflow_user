@@ -1,29 +1,26 @@
 package com.codding.test.startoverflowuser.viewmodal
 
 import androidx.lifecycle.*
+import com.codding.test.startoverflowuser.eventbus.MessageEvent
 import com.codding.test.startoverflowuser.interator.SoFListIterator
 import com.codding.test.startoverflowuser.modal.SoFUser
 import com.codding.test.startoverflowuser.screenstate.ScreenState
 import com.codding.test.startoverflowuser.screenstate.SoFListState
 import com.codding.test.startoverflowuser.util.AppLogger
+import com.codding.test.startoverflowuser.util.EventMessage
+import org.greenrobot.eventbus.EventBus
 import java.lang.Exception
 
-class SoFListViewModal (private val sofInterator: SoFListIterator) : ViewModel(), SoFListIterator.SofListListener {
+class SoFListViewModal (private val sofInterator: SoFListIterator) : BaseViewModal<SoFListState>(), SoFListIterator.SofListListener {
 
-    // Variables to controlled loaded data
-    var currentPage = 1
+
     // Cache last load page size to refresh data
     var lastLoadedPageSize = 1
 
     // Variables to controlled loaded data
     var favoriteSofUserIdList : List<String> = emptyList()
-
-    // Screen state to communicate with Views
-    val _sofListState = MutableLiveData<ScreenState<SoFListState>>()
-    val sofListState : LiveData<ScreenState<SoFListState>>
-            get() = _sofListState
-
     var sofUser : MutableList<SoFUser> = mutableListOf()
+
 
     init {
         // Get favorite sof list first
@@ -37,14 +34,14 @@ class SoFListViewModal (private val sofInterator: SoFListIterator) : ViewModel()
         AppLogger.debug(this, "getSofUser")
         AppLogger.debug(this, pageSize)
 
-        _sofListState.value = ScreenState.Loading
-        sofInterator.loadSoFUser(currentPage, pageSize, this)
+        setState(ScreenState.Loading)
+        sofInterator.loadSoFUser(getCurrentPage(), pageSize, this)
         lastLoadedPageSize = pageSize
 
     }
 
     fun refreshData(favoriteMode : Boolean) {
-        currentPage = 1
+        resetPage()
         if (favoriteMode) getFavoriteUser()
         else getSofUser(lastLoadedPageSize)
     }
@@ -59,8 +56,8 @@ class SoFListViewModal (private val sofInterator: SoFListIterator) : ViewModel()
     fun getFavoriteUser() {
         AppLogger.debug(this, "getFavoriteUser")
 
-        currentPage = 1
-        _sofListState.value = ScreenState.Loading
+        resetPage()
+        setState(ScreenState.Loading)
         sofInterator.getSofFavoriteUsers(this)
     }
 
@@ -70,35 +67,36 @@ class SoFListViewModal (private val sofInterator: SoFListIterator) : ViewModel()
 
     override fun onGetSoFListSuccess(dataList: MutableList<SoFUser>) {
         AppLogger.debug(this, "onGetSoFListSuccess")
+        EventBus.getDefault().post(MessageEvent(EventMessage.LOAD_DATA_COMPLETE))
 
         sofUser.clear()
         sofUser.addAll(dataList)
-        _sofListState.postValue(ScreenState.Render(SoFListState.LoadUserDone))
-        currentPage ++
+        postState(ScreenState.Render(SoFListState.LoadUserDone))
+        increasePage()
     }
 
     override fun onGetDataError(errorCode : Int, exception: Exception) {
         AppLogger.debug(this, "onGetSoFListError")
-        _sofListState.postValue(ScreenState.Render(SoFListState.LoadUserError))
+        postState(ScreenState.Render(SoFListState.LoadUserError))
 
     }
 
     override fun onReachedOutOfData() {
         AppLogger.debug(this, "onReachedOutOfData")
-        _sofListState.postValue(ScreenState.Render(SoFListState.ReachedOutOfData))
+        postState(ScreenState.Render(SoFListState.ReachedOutOfData))
     }
 
     override fun onGetSoFFavoriteIdListSuccess(idList: List<String>) {
         AppLogger.debug(this, "onGetSoFFavoriteIdListSuccess")
         favoriteSofUserIdList = idList
-        _sofListState.postValue(ScreenState.Render(SoFListState.LoadFavoriteListDone))
+        postState(ScreenState.Render(SoFListState.LoadFavoriteListDone))
     }
 
     override fun onGetSoFFavoriteListSuccess(dataList: MutableList<SoFUser>) {
         AppLogger.debug(this, "onGetSoFFavoriteListSuccess")
         sofUser.clear()
         sofUser.addAll(dataList)
-        _sofListState.postValue(ScreenState.Render(SoFListState.LoadUserDone))
+        postState(ScreenState.Render(SoFListState.LoadUserDone))
     }
 }
 

@@ -29,7 +29,8 @@
             android:layout_marginLeft="@dimen/repo_list_items_padding_side"
             app:layout_constraintTop_toTopOf="parent"
             android:textStyle="bold"
-            android:background="@drawable/favorite_checked"/>
+            android:background="@drawable/down_up_vote"
+            android:rotation="90"/>
 
     <TextView
             android:id="@+id/txtRepoChange"

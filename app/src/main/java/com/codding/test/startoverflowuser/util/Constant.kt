@@ -37,6 +37,10 @@ object ApiConstant {
     const val JSON_FIELD_CREATE_DATE = "creation_date"
 }
 
+object IntentCons {
+    const val INTENT_USER_ID = "user_id"
+}
+
 enum class NetWorkConnectionState {
     NONE, WIFI, CELL
 }
@@ -44,4 +48,14 @@ enum class NetWorkConnectionState {
 object TimeConstant {
     const val LAST_ACCESS_TIME_FORMAT = "MMM dd yyyy"
 }
+
+object RepuType {
+    const val REPU_TYPE_DOWN = "post_downvoted"
+    const val REPU_TYPE_ACCEPT = "answer_accepted"
+}
+
+object EventMessage {
+    const val LOAD_DATA_COMPLETE = 0x01
+}
+
 

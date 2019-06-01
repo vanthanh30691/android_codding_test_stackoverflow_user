@@ -1,7 +1,8 @@
 <resources>
-    <string name="app_name">StackOverflowUser</string>
+    <string name="app_name">SofUser</string>
 
     <string name="header_stack_overflow_user">StackOverflow Users</string>
+    <string name="header_stack_overflow_reputation">Reputations</string>
 
     <string name="user_list_reputation">Reputation:</string>
     <string name="user_list_last_access">Last Access Date:</string>

@@ -8,8 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.codding.test.startoverflowuser.R
 import com.codding.test.startoverflowuser.inflate
 import com.codding.test.startoverflowuser.modal.Reputation
+import com.codding.test.startoverflowuser.util.RepuType
 
-class RepoListAdapter : BaseLoadingListAdapter <Reputation>() {
+class RepuListAdapter : BaseLoadingListAdapter <Reputation>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if (viewType == VIEW_TYPE_ROW) {
@@ -37,6 +38,21 @@ class RepoListAdapter : BaseLoadingListAdapter <Reputation>() {
                 holder.repuChange.text = it.repuChange
                 holder.postId.text = it.postId
                 holder.createAt.text = getDisplayDate(it.createAt.toLong())
+
+                when (it.repuType) {
+                    RepuType.REPU_TYPE_DOWN -> {
+                        holder.repuType.setBackgroundResource(R.drawable.down_up_vote)
+                        holder.repuType.rotation = 90f
+                    }
+                    RepuType.REPU_TYPE_ACCEPT -> {
+                        holder.repuType.setBackgroundResource(R.drawable.tick)
+                        holder.repuType.rotation = 0f
+                    }
+                    else -> {
+                        holder.repuType.setBackgroundResource(R.drawable.down_up_vote)
+                        holder.repuType.rotation = -90f
+                    }
+                }
             }
         }
 

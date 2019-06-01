@@ -1,12 +1,9 @@
 package com.codding.test.startoverflowuser.ui
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,13 +16,13 @@ import com.codding.test.startoverflowuser.ui.adapter.SofListAdapter
 import com.codding.test.startoverflowuser.viewmodal.SoFListViewModal
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.codding.test.startoverflowuser.R;
+import com.codding.test.startoverflowuser.eventbus.MessageEvent
+import com.codding.test.startoverflowuser.ui.adapter.FlashScreenActivity
 import com.codding.test.startoverflowuser.ui.adapter.RVEmptyObserver
-import com.codding.test.startoverflowuser.util.AppLogger
-import com.codding.test.startoverflowuser.util.Constant
-import com.codding.test.startoverflowuser.util.NetWorkConnectionState
-import com.codding.test.startoverflowuser.util.getConnectionType
+import com.codding.test.startoverflowuser.util.*
 import com.codding.test.startoverflowuser.viewmodal.SoFListViewModalFactory
 import kotlinx.android.synthetic.main.bacsic_recycler_view_content.*
+import org.greenrobot.eventbus.EventBus
 
 
 class MainActivity : BaseActivity() {
@@ -51,7 +48,7 @@ class MainActivity : BaseActivity() {
 
         // Inflate view
         favoriteButton = findViewById(R.id.fab)
-        sofListView = findViewById(R.id.recyViewSofList)
+        sofListView = findViewById(R.id.recyView)
         emptyView = findViewById(R.id.emptyView)
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
 
@@ -59,7 +56,7 @@ class MainActivity : BaseActivity() {
         // Init variables
         viewModal = ViewModelProviders.of(this,
             SoFListViewModalFactory(SoFListIterator(application)))[SoFListViewModal::class.java]
-        viewModal.sofListState.observe(::getLifecycle, ::updateUI)
+        viewModal.modalState.observe(::getLifecycle, ::updateUI)
 
         sofListAdapter = SofListAdapter()
 
@@ -71,6 +68,9 @@ class MainActivity : BaseActivity() {
         favoriteButton.setOnClickListener { toogleFavoriteMode() }
         sofListAdapter.setUserRowListener(object : SofUserRowListener {
             override fun onUserClicked(position: Int) {
+                sofListAdapter.getItemAt(position)?.let {
+                    startRepuActivity(it.userId)
+                }
             }
 
             override fun onUserFavoritedTogle(position: Int) {
@@ -91,6 +91,9 @@ class MainActivity : BaseActivity() {
 
         initScrollListener()
         fetchMoreData()
+        // Start flash screen and wait load data complete
+        startActivityForResult(Intent(this, FlashScreenActivity::class.java), 0)
+
     }
 
     override fun setupProgessBar() {
@@ -114,6 +117,13 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    private fun startRepuActivity(userId : String) {
+        AppLogger.debug(this, "startRepuActivity $userId")
+        var intent = Intent(this, ReputationActivity::class.java)
+        intent.putExtra(IntentCons.INTENT_USER_ID, userId)
+        startActivity(intent)
+    }
+
     private fun toogleUserFafovirteAt(position: Int) {
         AppLogger.debug(this, "toogleUserFafovirteAt")
         AppLogger.debug(this, position)
@@ -133,8 +143,8 @@ class MainActivity : BaseActivity() {
                 isFetchingMoreData = false
                 Toast.makeText(this, R.string.error_no_internet_connection, Toast.LENGTH_LONG).show()
             }
-            NetWorkConnectionState.CELL -> viewModal.getSofUser(Constant.SOF_DATA_LOAD_PAGE_SIZE_ON_WIFI)
-            NetWorkConnectionState.WIFI -> viewModal.getSofUser(Constant.SOF_DATA_LOAD_PAGE_SIZE)
+            else -> viewModal.getSofUser(getPageSize())
+
         }
     }
 
@@ -178,9 +188,8 @@ class MainActivity : BaseActivity() {
         }
     }
 
-
     private fun initScrollListener() {
-        recyViewSofList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        recyView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
             }
