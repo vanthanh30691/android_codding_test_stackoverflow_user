@@ -1,5 +1,6 @@
 package com.codding.test.startoverflowuser.ui
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
@@ -92,7 +93,7 @@ class MainActivity : BaseActivity() {
         initScrollListener()
         fetchMoreData()
         // Start flash screen and wait load data complete
-        startActivityForResult(Intent(this, FlashScreenActivity::class.java), 0)
+        startActivityForResult(Intent(this, FlashScreenActivity::class.java), IntentCons.INTENT_REQUEST_LOADDING_SCREEN)
 
     }
 
@@ -218,6 +219,13 @@ class MainActivity : BaseActivity() {
             }
         })
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == IntentCons.INTENT_REQUEST_LOADDING_SCREEN && resultCode == Activity.RESULT_CANCELED) {
+            finish()
+        }
     }
 
 }

@@ -1,5 +1,6 @@
 package com.codding.test.startoverflowuser.ui.adapter
 
+import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.KeyEvent
@@ -20,9 +21,10 @@ class FlashScreenActivity : AppCompatActivity() {
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
-        // Block back key at this time
+        // Close app if user want
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            return true
+            setResult(Activity.RESULT_CANCELED)
+            finish()
         }
         return super.onKeyUp(keyCode, event)
     }

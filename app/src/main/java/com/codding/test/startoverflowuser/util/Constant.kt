@@ -39,6 +39,7 @@ object ApiConstant {
 
 object IntentCons {
     const val INTENT_USER_ID = "user_id"
+    const val INTENT_REQUEST_LOADDING_SCREEN = 0x01
 }
 
 enum class NetWorkConnectionState {
