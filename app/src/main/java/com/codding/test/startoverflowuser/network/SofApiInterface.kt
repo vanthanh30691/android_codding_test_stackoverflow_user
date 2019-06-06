@@ -9,7 +9,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface ApiInterface {
+interface SofApiInterface {
     @GET(ApiConstant.API_GET_SOF_USER)
     fun getSoFUser(
         @Query(ApiConstant.API_PAGE_PARAMETER) page: Int,

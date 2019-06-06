@@ -1,13 +1,13 @@
 package com.codding.test.startoverflowuser.repository
 
-import com.codding.test.startoverflowuser.network.ApiService
 import com.codding.test.startoverflowuser.modal.SoFUser
 import com.codding.test.startoverflowuser.network.CustomResult
+import com.codding.test.startoverflowuser.network.SofApiInterface
+import com.codding.test.startoverflowuser.network.SofApiService
 import com.codding.test.startoverflowuser.network.respond.SoFUserRespond
-import com.codding.test.startoverflowuser.roomdatabase.SofUserDatabase
 import com.codding.test.startoverflowuser.roomdatabase.dao.SofUserDao
 
-class SofUserRepository(private val apiService: ApiService, private val sofDao : SofUserDao) : NetWorkBaseRepository() {
+class SofUserRepository(private val apiService: SofApiService, private val sofDao : SofUserDao) : NetWorkBaseRepository() {
 
     suspend fun getSofUserData(page : Int, pageSize: Int) : CustomResult<SoFUserRespond> {
         var result = safeApiCall(

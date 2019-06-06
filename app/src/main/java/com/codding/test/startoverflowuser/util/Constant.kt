@@ -15,6 +15,9 @@ object RoomConstant {
 }
 
 object ApiConstant {
+
+    const val API_BASE_URL = "https://api.stackexchange.com/2.2/"
+
     const val API_DEFAULT_SITE_PARAMETER = "stackoverflow"
     const val API_SITE_PARAMETER = "site"
     const val API_PAGE_PARAMETER = "page"
@@ -58,6 +61,11 @@ object RepuType {
 
 object EventMessage {
     const val LOAD_DATA_COMPLETE = 0x01
+}
+
+object CacheConstant {
+    const val CACHE_SIZE_IN_MB = 10L
+    const val CACHE_FOLDER_NAME = "HttpCache"
 }
 
 
