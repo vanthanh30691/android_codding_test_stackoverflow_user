@@ -16,11 +16,14 @@ import com.codding.test.startoverflowuser.ui.adapter.SofListAdapter
 import com.codding.test.startoverflowuser.viewmodal.SoFListViewModal
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.codding.test.startoverflowuser.R;
+import com.codding.test.startoverflowuser.SofApplication
+import com.codding.test.startoverflowuser.di.component.DaggerMainActivityComponent
 import com.codding.test.startoverflowuser.ui.adapter.RVEmptyObserver
 import com.codding.test.startoverflowuser.util.*
 import com.codding.test.startoverflowuser.viewmodal.SoFListViewModalFactory
 import kotlinx.android.synthetic.main.bacsic_recycler_view_content.*
 import timber.log.Timber
+import javax.inject.Inject
 
 
 class MainActivity : BaseActivity() {
@@ -33,7 +36,6 @@ class MainActivity : BaseActivity() {
     private lateinit var emptyView : TextView
 
     // Variable items
-    private lateinit var sofListAdapter : SofListAdapter
     private var isFetchingMoreData  = false
 
     private var isFavoriteMode = false
@@ -41,10 +43,20 @@ class MainActivity : BaseActivity() {
     private var  currentState : SoFListState = SoFListState.StartLoadNewUser
     private var lastConnectionType = NetWorkConnectionState.NONE
 
+    @Inject
+    lateinit var sofListAdapter : SofListAdapter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        var sofApplication = application as SofApplication
+        var mainActivityComponent = DaggerMainActivityComponent.builder().
+            sofComponent(sofApplication.getAppComponent()).
+            build()
+        mainActivityComponent.injectMainActivity(this)
+
         setupProgessBar()
 
         // Inflate view
@@ -58,8 +70,6 @@ class MainActivity : BaseActivity() {
         viewModal = ViewModelProviders.of(this,
             SoFListViewModalFactory(SoFListIterator(application)))[SoFListViewModal::class.java]
         viewModal.modalState.observe(::getLifecycle, ::updateUI)
-
-        sofListAdapter = SofListAdapter()
 
         // Setup listener
         swipeRefreshLayout.setOnRefreshListener {

@@ -1,4 +1,4 @@
-package com.codding.test.startoverflowuser.module
+package com.codding.test.startoverflowuser.di.module
 
 import android.content.Context
 import dagger.Module
@@ -9,6 +9,6 @@ class ContextModule(private val context : Context) {
 
     @Provides
     fun context() : Context {
-        return context.applicationContext
+        return context
     }
 }

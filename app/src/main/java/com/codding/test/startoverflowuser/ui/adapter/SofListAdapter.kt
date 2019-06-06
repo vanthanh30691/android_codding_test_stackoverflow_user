@@ -15,7 +15,7 @@ import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
 import java.util.*
 
-class SofListAdapter : BaseLoadingListAdapter <SoFUser>() {
+class SofListAdapter(private val picasso: Picasso) : BaseLoadingListAdapter <SoFUser>() {
 
     var favoriteList : MutableSet<String> = mutableSetOf()
     var isFavoriteMode = false
@@ -53,7 +53,7 @@ class SofListAdapter : BaseLoadingListAdapter <SoFUser>() {
                 holder.location.text = it.location
                 holder.reputaions.text = it.reputation.toString()
                 holder.userName.text = it.userName
-                holder.updateAvatar(it.profileImg)
+                holder.updateAvatar(picasso, it.profileImg)
 
                 // Update favorite state
                 if (favoriteList.contains(currentUser.userId)) {
@@ -100,7 +100,7 @@ class SofListAdapter : BaseLoadingListAdapter <SoFUser>() {
         var reputaions = itemView.findViewById<TextView>(R.id.txtReputation)
         var accessDate = itemView.findViewById<TextView>(R.id.txtLastAccess)
 
-        fun updateAvatar(url: String) {
+        fun updateAvatar(picasso: Picasso, url: String) {
             Picasso.get().load(url).into(avartar)
         }
     }

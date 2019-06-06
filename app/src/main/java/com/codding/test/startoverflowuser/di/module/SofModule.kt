@@ -1,4 +1,4 @@
-package com.codding.test.startoverflowuser.module
+package com.codding.test.startoverflowuser.di.module
 
 import com.codding.test.startoverflowuser.network.SofApiInterface
 import com.codding.test.startoverflowuser.network.SofApiService
@@ -11,11 +11,13 @@ import dagger.Provides
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Singleton
 
 @Module(includes = [OkHttpClientModule::class])
 class SofModule {
 
     @Provides
+    @Singleton
     fun sofUserApi (retrofit: Retrofit) : SofApiService {
         return SofApiService(retrofit.create(SofApiInterface::class.java))
     }

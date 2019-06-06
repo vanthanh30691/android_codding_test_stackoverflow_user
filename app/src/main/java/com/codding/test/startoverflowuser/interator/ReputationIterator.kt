@@ -1,11 +1,11 @@
 package com.codding.test.startoverflowuser.interator
 
 import android.app.Application
-import com.codding.test.startoverflowuser.component.DaggerSofComponent
+import com.codding.test.startoverflowuser.SofApplication
+import com.codding.test.startoverflowuser.di.component.DaggerSofComponent
 import com.codding.test.startoverflowuser.listener.BaseIteratorListener
 import com.codding.test.startoverflowuser.modal.Reputation
-import com.codding.test.startoverflowuser.module.ContextModule
-import com.codding.test.startoverflowuser.network.SofApiService
+import com.codding.test.startoverflowuser.di.module.AppContextModule
 import com.codding.test.startoverflowuser.network.CustomResult
 import com.codding.test.startoverflowuser.repository.ReputationRespository
 import kotlinx.coroutines.launch
@@ -16,8 +16,8 @@ class ReputationIterator(application : Application) : BaseIterator(application) 
     private var repository : ReputationRespository
 
     init {
-        var sofComponent = DaggerSofComponent.builder().contextModule(ContextModule(application)).build()
-        repository  = ReputationRespository(sofComponent.getSofApiService())
+        var sofApplication = application as SofApplication
+        repository  = ReputationRespository(sofApplication.getAppComponent().getSofApiService())
     }
 
     interface ReputationInteratorListener : BaseIteratorListener {

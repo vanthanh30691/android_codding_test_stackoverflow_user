@@ -1,6 +1,7 @@
-package com.codding.test.startoverflowuser.module
+package com.codding.test.startoverflowuser.di.module
 
 import android.content.Context
+import com.codding.test.startoverflowuser.di.qualifier.ApplicationContext
 import com.codding.test.startoverflowuser.util.CacheConstant
 import dagger.Module
 import dagger.Provides
@@ -10,7 +11,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import timber.log.Timber
 import java.io.File
 
-@Module(includes = [ContextModule::class])
+@Module(includes = [AppContextModule::class])
 class OkHttpClientModule {
 
     @Provides
@@ -28,7 +29,7 @@ class OkHttpClientModule {
     }
 
     @Provides
-    fun file(context: Context) : File {
+    fun file(@ApplicationContext context: Context) : File {
         var file = File(context.cacheDir, CacheConstant.CACHE_FOLDER_NAME)
         file.mkdir()
         return file

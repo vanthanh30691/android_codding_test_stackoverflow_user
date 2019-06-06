@@ -1,13 +1,12 @@
 package com.codding.test.startoverflowuser.interator
 
 import android.app.Application
-import com.codding.test.startoverflowuser.component.DaggerSofComponent
+import com.codding.test.startoverflowuser.SofApplication
+import com.codding.test.startoverflowuser.di.component.DaggerSofComponent
 import com.codding.test.startoverflowuser.listener.BaseIteratorListener
 import com.codding.test.startoverflowuser.modal.SoFUser
-import com.codding.test.startoverflowuser.module.ContextModule
+import com.codding.test.startoverflowuser.di.module.AppContextModule
 import com.codding.test.startoverflowuser.network.CustomResult
-import com.codding.test.startoverflowuser.network.SofApiInterface
-import com.codding.test.startoverflowuser.network.SofApiService
 import com.codding.test.startoverflowuser.repository.SofUserRepository
 import com.codding.test.startoverflowuser.roomdatabase.SofUserDatabase
 import kotlinx.coroutines.*
@@ -20,8 +19,8 @@ class SoFListIterator(application : Application) : BaseIterator(application) {
 
     init {
         val sofUserDao = SofUserDatabase.getDatabase(application).sofUserDao()
-        var sofComponent = DaggerSofComponent.builder().contextModule(ContextModule(application)).build()
-        repository  = SofUserRepository(sofComponent.getSofApiService(), sofUserDao)
+        var sofApplication = application as SofApplication
+        repository  = SofUserRepository(sofApplication.getAppComponent().getSofApiService(), sofUserDao)
     }
 
     interface SofListListener : BaseIteratorListener {

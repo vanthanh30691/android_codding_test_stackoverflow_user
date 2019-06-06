@@ -1,6 +1,7 @@
-package com.codding.test.startoverflowuser.module
+package com.codding.test.startoverflowuser.di.module
 
 import android.content.Context
+import com.codding.test.startoverflowuser.di.qualifier.ApplicationContext
 import com.squareup.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
 import dagger.Module
@@ -11,7 +12,7 @@ import okhttp3.OkHttpClient
 class PicassoModule {
 
     @Provides
-    fun picasso(context: Context, okHttp3Downloader: OkHttp3Downloader) : Picasso {
+    fun picasso(@ApplicationContext context: Context, okHttp3Downloader: OkHttp3Downloader) : Picasso {
         return Picasso.Builder(context)
             .downloader(okHttp3Downloader)
             .build()
