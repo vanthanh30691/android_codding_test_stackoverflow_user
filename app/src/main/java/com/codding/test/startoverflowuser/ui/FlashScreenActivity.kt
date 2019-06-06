@@ -1,12 +1,10 @@
 package com.codding.test.startoverflowuser.ui
 
-import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.KeyEvent
 import com.codding.test.startoverflowuser.R
 import com.codding.test.startoverflowuser.eventbus.MessageEvent
-import com.codding.test.startoverflowuser.util.AppLogger
 import com.codding.test.startoverflowuser.util.EventMessage
 import com.codding.test.startoverflowuser.util.IntentCons
 import org.greenrobot.eventbus.EventBus

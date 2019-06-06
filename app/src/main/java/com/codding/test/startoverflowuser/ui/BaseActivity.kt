@@ -1,18 +1,12 @@
 package com.codding.test.startoverflowuser.ui
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 import android.widget.ProgressBar
-import com.codding.test.startoverflowuser.screenstate.ScreenState
-import com.codding.test.startoverflowuser.screenstate.SoFListState
-import com.codding.test.startoverflowuser.util.AppLogger
 import com.codding.test.startoverflowuser.util.Constant
 import com.codding.test.startoverflowuser.util.NetWorkConnectionState
 import com.codding.test.startoverflowuser.util.getConnectionType
-import android.content.Intent
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network

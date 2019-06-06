@@ -6,7 +6,6 @@ import com.codding.test.startoverflowuser.interator.SoFListIterator
 import com.codding.test.startoverflowuser.modal.SoFUser
 import com.codding.test.startoverflowuser.screenstate.ScreenState
 import com.codding.test.startoverflowuser.screenstate.SoFListState
-import com.codding.test.startoverflowuser.util.AppLogger
 import com.codding.test.startoverflowuser.util.EventMessage
 import org.greenrobot.eventbus.EventBus
 import timber.log.Timber

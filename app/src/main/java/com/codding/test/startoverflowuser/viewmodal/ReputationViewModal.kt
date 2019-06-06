@@ -6,7 +6,6 @@ import com.codding.test.startoverflowuser.interator.ReputationIterator
 import com.codding.test.startoverflowuser.modal.Reputation
 import com.codding.test.startoverflowuser.screenstate.ReputationState
 import com.codding.test.startoverflowuser.screenstate.ScreenState
-import com.codding.test.startoverflowuser.util.AppLogger
 import timber.log.Timber
 import java.lang.Exception
 
