@@ -48,6 +48,8 @@ dependencies {
 
     def evenBusVersion = "3.1.1"
 
+    def timberVersion = "4.7.1"
+
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -90,5 +92,7 @@ dependencies {
 
     // Event bus
     implementation "org.greenrobot:eventbus:$evenBusVersion"
+
+    implementation 'com.jakewharton.timber:timber:4.7.1'
 
 }

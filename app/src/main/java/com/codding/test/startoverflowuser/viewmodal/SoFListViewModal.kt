@@ -9,6 +9,7 @@ import com.codding.test.startoverflowuser.screenstate.SoFListState
 import com.codding.test.startoverflowuser.util.AppLogger
 import com.codding.test.startoverflowuser.util.EventMessage
 import org.greenrobot.eventbus.EventBus
+import timber.log.Timber
 import java.lang.Exception
 
 class SoFListViewModal (private val sofInterator: SoFListIterator) : BaseViewModal<SoFListState>(), SoFListIterator.SofListListener {
@@ -31,8 +32,7 @@ class SoFListViewModal (private val sofInterator: SoFListIterator) : BaseViewMod
      * Funtions interact with UI
      */
     fun getSofUser(pageSize : Int) {
-        AppLogger.debug(this, "getSofUser")
-        AppLogger.debug(this, pageSize)
+        Timber.d("getSofUser pageSize: $pageSize")
 
         postState(ScreenState.Loading)
         sofInterator.loadSoFUser(getCurrentPage(), pageSize, this)
@@ -47,14 +47,12 @@ class SoFListViewModal (private val sofInterator: SoFListIterator) : BaseViewMod
     }
 
     fun toogleFavoriteState(sofUser : SoFUser) {
-        AppLogger.debug(this, "toogleFavoriteState")
-        AppLogger.debug(this, sofUser)
-
+        Timber.d("toogleFavoriteState $sofUser")
         sofInterator.toogleFavoriteState(sofUser,this)
     }
 
     fun getFavoriteUser() {
-        AppLogger.debug(this, "getFavoriteUser")
+        Timber.d("getFavoriteUser")
 
         resetPage()
         postState(ScreenState.Loading)
@@ -66,7 +64,7 @@ class SoFListViewModal (private val sofInterator: SoFListIterator) : BaseViewMod
      */
 
     override fun onGetSoFListSuccess(dataList: MutableList<SoFUser>) {
-        AppLogger.debug(this, "onGetSoFListSuccess")
+        Timber.d("onGetSoFListSuccess")
         EventBus.getDefault().post(MessageEvent(EventMessage.LOAD_DATA_COMPLETE))
 
         sofUser.clear()
@@ -76,24 +74,24 @@ class SoFListViewModal (private val sofInterator: SoFListIterator) : BaseViewMod
     }
 
     override fun onGetDataError(errorCode : Int, exception: Exception) {
-        AppLogger.debug(this, "onGetSoFListError")
+        Timber.d("onGetSoFListError")
         postState(ScreenState.Render(SoFListState.LoadUserError))
 
     }
 
     override fun onReachedOutOfData() {
-        AppLogger.debug(this, "onReachedOutOfData")
+        Timber.d("onReachedOutOfData")
         postState(ScreenState.Render(SoFListState.ReachedOutOfData))
     }
 
     override fun onGetSoFFavoriteIdListSuccess(idList: List<String>) {
-        AppLogger.debug(this, "onGetSoFFavoriteIdListSuccess")
+        Timber.d("onGetSoFFavoriteIdListSuccess")
         favoriteSofUserIdList = idList
         postState(ScreenState.Render(SoFListState.LoadFavoriteListDone))
     }
 
     override fun onGetSoFFavoriteListSuccess(dataList: MutableList<SoFUser>) {
-        AppLogger.debug(this, "onGetSoFFavoriteListSuccess")
+        Timber.d("onGetSoFFavoriteListSuccess")
         sofUser.clear()
         sofUser.addAll(dataList)
         postState(ScreenState.Render(SoFListState.LoadUserDone))

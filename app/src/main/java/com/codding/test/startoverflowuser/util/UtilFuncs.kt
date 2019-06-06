@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import com.google.gson.GsonBuilder
+import timber.log.Timber
 import java.util.*
 
 fun getConnectionType(context: Context): NetWorkConnectionState {
@@ -38,7 +39,7 @@ fun getJsonPrettyData(data : Any) : String {
     try {
         return GsonBuilder().setPrettyPrinting().create().toJson(data)
     } catch (ignored: Exception) {
-        AppLogger.error(ignored)
+        Timber.e(ignored)
     }
     return ""
 }

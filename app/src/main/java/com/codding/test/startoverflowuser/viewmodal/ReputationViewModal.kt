@@ -7,6 +7,7 @@ import com.codding.test.startoverflowuser.modal.Reputation
 import com.codding.test.startoverflowuser.screenstate.ReputationState
 import com.codding.test.startoverflowuser.screenstate.ScreenState
 import com.codding.test.startoverflowuser.util.AppLogger
+import timber.log.Timber
 import java.lang.Exception
 
 class ReputationViewModal (private val reputationIterator: ReputationIterator) : BaseViewModal<ReputationState>(),
@@ -24,7 +25,7 @@ class ReputationViewModal (private val reputationIterator: ReputationIterator) :
     }
 
     fun getReputationList(userId : String, pageSize : Int) {
-        AppLogger.debug(this, "getReputationList $userId $pageSize")
+        Timber.d("getReputationList $userId $pageSize")
         postState(ScreenState.Loading)
         reputationIterator.loadUserReputation(userId, getCurrentPage(), pageSize, this)
 
@@ -33,12 +34,12 @@ class ReputationViewModal (private val reputationIterator: ReputationIterator) :
     }
 
     override fun onGetDataError(errorCode: Int, exception: Exception) {
-        AppLogger.debug(this, "onGetSoFListError")
+        Timber.d("onGetSoFListError")
         postState(ScreenState.Render(ReputationState.LoadRepuError))
     }
 
     override fun onGetUserReputationSuccess(dataList: MutableList<Reputation>) {
-        AppLogger.debug(this, "onGetUserReputationSuccess ${dataList.size}")
+        Timber.d("onGetUserReputationSuccess ${dataList.size}")
 
         repuList.clear()
         repuList.addAll(dataList)
@@ -47,7 +48,7 @@ class ReputationViewModal (private val reputationIterator: ReputationIterator) :
     }
 
     override fun onReachedOutOfData() {
-        AppLogger.debug(this, "onReachedOutOfData")
+        Timber.d("onReachedOutOfData")
         postState(ScreenState.Render(ReputationState.ReachedOutOfData))
     }
 }

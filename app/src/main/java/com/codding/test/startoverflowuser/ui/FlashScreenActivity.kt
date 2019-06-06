@@ -12,6 +12,7 @@ import com.codding.test.startoverflowuser.util.IntentCons
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import timber.log.Timber
 
 class FlashScreenActivity : AppCompatActivity() {
 
@@ -32,7 +33,7 @@ class FlashScreenActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: MessageEvent) {
-        AppLogger.debug(this, "onMessageEvent $event.messageCode")
+        Timber.d("onMessageEvent $event.messageCode")
         if (event.messageCode == EventMessage.LOAD_DATA_COMPLETE) {
             finish()
         }

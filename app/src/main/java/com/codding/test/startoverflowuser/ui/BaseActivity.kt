@@ -19,8 +19,7 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.net.ConnectivityManager.NetworkCallback
-
-
+import timber.log.Timber
 
 
 abstract class BaseActivity : AppCompatActivity() {
@@ -53,14 +52,14 @@ abstract class BaseActivity : AppCompatActivity() {
 
 
     protected fun showingLoadingScreen() {
-        AppLogger.debug(this, "showingLoadingScreen")
+        Timber.d("showingLoadingScreen")
         processBar?. let {
             it.visibility = View.VISIBLE
         }
     }
 
     protected fun hideLoadingScreen() {
-        AppLogger.debug(this, "hideLoadingScreen")
+        Timber.d("hideLoadingScreen")
         processBar?. let {
             it.visibility = View.GONE
         }
@@ -87,19 +86,19 @@ abstract class BaseActivity : AppCompatActivity() {
         }
 
         fun enable(context: Context) {
-            AppLogger.debug(this, "ConnectionStateMonitor enable")
+            Timber.d("ConnectionStateMonitor enable")
             val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             connectivityManager.registerNetworkCallback(networkRequest, this)
         }
 
         fun disable(context: Context) {
-            AppLogger.debug(this, "ConnectionStateMonitor disable")
+            Timber.d("ConnectionStateMonitor disable")
             val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             connectivityManager.unregisterNetworkCallback(this)
         }
 
         override fun onAvailable(network: Network) {
-            AppLogger.debug(this, "ConnectionStateMonitor onAvailable")
+            Timber.d("ConnectionStateMonitor onAvailable")
             onNetworkAvailable()
         }
     }

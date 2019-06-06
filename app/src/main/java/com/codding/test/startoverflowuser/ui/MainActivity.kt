@@ -20,6 +20,7 @@ import com.codding.test.startoverflowuser.ui.adapter.RVEmptyObserver
 import com.codding.test.startoverflowuser.util.*
 import com.codding.test.startoverflowuser.viewmodal.SoFListViewModalFactory
 import kotlinx.android.synthetic.main.bacsic_recycler_view_content.*
+import timber.log.Timber
 
 
 class MainActivity : BaseActivity() {
@@ -100,7 +101,7 @@ class MainActivity : BaseActivity() {
     }
 
     override fun onNetworkAvailable() {
-        AppLogger.debug(this, "onNetworkAvailable $currentState")
+        Timber.d("onNetworkAvailable $currentState")
         when (currentState) {
             // Resume load data again from fail states
             SoFListState.LoadFavoriteListDone, SoFListState.LoadUserError ->  fetchMoreData()
@@ -113,9 +114,7 @@ class MainActivity : BaseActivity() {
     }
 
     private fun toogleFavoriteMode() {
-        AppLogger.debug(this, "toogleFavoriteMode")
-        AppLogger.debug(this, isFavoriteMode)
-
+        Timber.d("toogleFavoriteMode: $isFavoriteMode")
         isFavoriteMode = !isFavoriteMode
         // Reset adapter data
         sofListAdapter.toogleAdapterMode(isFavoriteMode)
@@ -130,15 +129,14 @@ class MainActivity : BaseActivity() {
     }
 
     private fun startRepuActivity(userId : String) {
-        AppLogger.debug(this, "startRepuActivity $userId")
+        Timber.d("startRepuActivity $userId")
         var intent = Intent(this, ReputationActivity::class.java)
         intent.putExtra(IntentCons.INTENT_USER_ID, userId)
         startActivity(intent)
     }
 
     private fun toogleUserFafovirteAt(position: Int) {
-        AppLogger.debug(this, "toogleUserFafovirteAt")
-        AppLogger.debug(this, position)
+        Timber.d("toogleUserFafovirteAt $position")
 
         var sofUser = sofListAdapter.getItemAt(position)
         sofUser?. let {
@@ -147,10 +145,10 @@ class MainActivity : BaseActivity() {
     }
 
     private fun fetchMoreData() {
-        AppLogger.debug(this, "fetchMoreData")
+        Timber.d("fetchMoreData")
         lastConnectionType = getConnectionType(this)
 
-        AppLogger.debug(this, "$lastConnectionType")
+        Timber.d("$lastConnectionType")
         when(lastConnectionType) {
             NetWorkConnectionState.NONE -> {
                 isFetchingMoreData = false
@@ -176,8 +174,7 @@ class MainActivity : BaseActivity() {
      * Controll UI State
      */
     private fun processLoadDataState(sofListState : SoFListState) {
-        AppLogger.debug(this, "processLoadDataState")
-        AppLogger.debug(this, sofListState)
+        Timber.d("processLoadDataState with state: $sofListState")
         isFetchingMoreData = false
 
         swipeRefreshLayout.isRefreshing = false
@@ -228,7 +225,7 @@ class MainActivity : BaseActivity() {
                         if (numberItemToReachBottom <= 1
                             || (numberItemToReachBottom < Constant.SOF_DATA_BACKGROUND_LOAD_PADDING
                             && lastConnectionType == NetWorkConnectionState.WIFI)) {
-                            AppLogger.debug(this, "onScrolled to end, load more data")
+                            Timber.d("onScrolled to end, load more data")
                             fetchMoreData()
                         }
                     }

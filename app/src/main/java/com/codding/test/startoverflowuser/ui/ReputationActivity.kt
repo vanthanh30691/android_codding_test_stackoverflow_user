@@ -19,6 +19,7 @@ import com.codding.test.startoverflowuser.util.*
 import com.codding.test.startoverflowuser.viewmodal.ReputationViewModal
 import com.codding.test.startoverflowuser.viewmodal.ReputationViewModalFactory
 import kotlinx.android.synthetic.main.bacsic_recycler_view_content.*
+import timber.log.Timber
 
 class ReputationActivity : BaseActivity() {
 
@@ -77,7 +78,7 @@ class ReputationActivity : BaseActivity() {
         // Get user id from intent
         intent?.let {
             userId = it.getStringExtra(IntentCons.INTENT_USER_ID)
-            AppLogger.debug(this@ReputationActivity, "get Intent UserId: $userId")
+            Timber.d("get Intent UserId: $userId")
         }
 
         initScrollListener()
@@ -86,7 +87,7 @@ class ReputationActivity : BaseActivity() {
     }
 
     override fun onNetworkAvailable() {
-        AppLogger.debug(this, "onNetworkAvailable $currentState")
+        Timber.d("onNetworkAvailable $currentState")
         when (currentState) {
             // Resume load data again from fail states
             ReputationState.LoadRepuError ->  fetchMoreData()
@@ -94,7 +95,7 @@ class ReputationActivity : BaseActivity() {
     }
 
     private fun fetchMoreData() {
-        AppLogger.debug(this, "fetchMoreData")
+        Timber.d("fetchMoreData")
 
         lastConnectionType = getConnectionType(this)
         when(lastConnectionType) {
@@ -121,8 +122,7 @@ class ReputationActivity : BaseActivity() {
      * Controll UI State
      */
     private fun processLoadDataState(repuState : ReputationState) {
-        AppLogger.debug(this, "processLoadDataState")
-        AppLogger.debug(this, repuState)
+        Timber.d("processLoadDataState $repuState")
 
         isFetchingMoreData = false
         swipeRefreshLayout.isRefreshing = false
