@@ -1,40 +1,55 @@
 package com.codding.test.startoverflowuser.viewmodal
 
+import android.app.Application
 import androidx.lifecycle.*
 import com.codding.test.startoverflowuser.eventbus.MessageEvent
-import com.codding.test.startoverflowuser.interator.SoFListIterator
 import com.codding.test.startoverflowuser.modal.SoFUser
+import com.codding.test.startoverflowuser.network.CustomResult
+import com.codding.test.startoverflowuser.repository.SofUserRepository
 import com.codding.test.startoverflowuser.screenstate.ScreenState
 import com.codding.test.startoverflowuser.screenstate.SoFListState
 import com.codding.test.startoverflowuser.util.EventMessage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
 import java.lang.Exception
 
-class SoFListViewModal (private val sofInterator: SoFListIterator) : BaseViewModal<SoFListState>(), SoFListIterator.SofListListener {
-
+class SoFListViewModal (application: Application) : BaseViewModal<SoFListState>(application) {
 
     // Cache last load page size to refresh data
-    var lastLoadedPageSize = 1
+    private var lastLoadedPageSize = 1
 
     // Variables to controlled loaded data
     var favoriteSofUserIdList : List<String> = emptyList()
     var sofUser : MutableList<SoFUser> = mutableListOf()
 
+    private var sofUserRepository = SofUserRepository(application)
 
-    init {
-        // Get favorite sof list first
-        sofInterator.getSofFavoriteUserIdList(this)
+
+    fun getFavoriteIdList() {
+        viewModelScope.launch(Dispatchers.IO) {
+            var favoriteIdList = sofUserRepository.getSofFavoriteUserIdList()
+            onGetSoFFavoriteIdListSuccess(favoriteIdList)
+        }
     }
 
     /**
-     * Funtions interact with UI
+     * Functions interact with UI
      */
     fun getSofUser(pageSize : Int) {
         Timber.d("getSofUser pageSize: $pageSize")
-
         postState(ScreenState.Loading)
-        sofInterator.loadSoFUser(getCurrentPage(), pageSize, this)
+        viewModelScope.launch(Dispatchers.IO) {
+            var result = sofUserRepository.getSofUserData(getCurrentPage(), pageSize)
+            when (result) {
+                is CustomResult.Success -> {
+                    if (!result.data.hasMore) onReachedOutOfData()
+                    else onGetSoFListSuccess(result.data.sofUserList.toMutableList())
+                }
+                is CustomResult.Error -> onGetDataError(result.errorCode,  result.exception)
+            }
+        }
         lastLoadedPageSize = pageSize
 
     }
@@ -47,7 +62,17 @@ class SoFListViewModal (private val sofInterator: SoFListIterator) : BaseViewMod
 
     fun toogleFavoriteState(sofUser : SoFUser) {
         Timber.d("toogleFavoriteState $sofUser")
-        sofInterator.toogleFavoriteState(sofUser,this)
+        viewModelScope.launch(Dispatchers.IO) {
+            var user = sofUserRepository.getUserById(sofUser.userId)
+            if (user != null) {
+                sofUserRepository.removeFavoriteUser(sofUser)
+            } else {
+                sofUserRepository.addFavoriteUser(sofUser)
+            }
+            // Notify new userIdList
+            var idList = sofUserRepository.getSofFavoriteUserIdList()
+            onGetSoFFavoriteIdListSuccess(idList)
+        }
     }
 
     fun getFavoriteUser() {
@@ -55,14 +80,17 @@ class SoFListViewModal (private val sofInterator: SoFListIterator) : BaseViewMod
 
         resetPage()
         postState(ScreenState.Loading)
-        sofInterator.getSofFavoriteUsers(this)
+        viewModelScope.launch(Dispatchers.IO) {
+            var userList = sofUserRepository.getSofFavoriteUsers()
+            onGetSoFFavoriteListSuccess(userList)
+        }
     }
 
     /**
      * Interactor listeners
      */
 
-    override fun onGetSoFListSuccess(dataList: MutableList<SoFUser>) {
+    private fun onGetSoFListSuccess(dataList: MutableList<SoFUser>) {
         Timber.d("onGetSoFListSuccess")
         EventBus.getDefault().post(MessageEvent(EventMessage.LOAD_DATA_COMPLETE))
 
@@ -72,24 +100,24 @@ class SoFListViewModal (private val sofInterator: SoFListIterator) : BaseViewMod
         increasePage()
     }
 
-    override fun onGetDataError(errorCode : Int, exception: Exception) {
-        Timber.d("onGetSoFListError")
+    private fun onGetDataError(errorCode : Int, exception: Exception) {
+        Timber.d("onGetSoFListError $errorCode $exception")
         postState(ScreenState.Render(SoFListState.LoadUserError))
 
     }
 
-    override fun onReachedOutOfData() {
+    private fun onReachedOutOfData() {
         Timber.d("onReachedOutOfData")
         postState(ScreenState.Render(SoFListState.ReachedOutOfData))
     }
 
-    override fun onGetSoFFavoriteIdListSuccess(idList: List<String>) {
+    private fun onGetSoFFavoriteIdListSuccess(idList: List<String>) {
         Timber.d("onGetSoFFavoriteIdListSuccess")
         favoriteSofUserIdList = idList
         postState(ScreenState.Render(SoFListState.LoadFavoriteListDone))
     }
 
-    override fun onGetSoFFavoriteListSuccess(dataList: MutableList<SoFUser>) {
+    private fun onGetSoFFavoriteListSuccess(dataList: MutableList<SoFUser>) {
         Timber.d("onGetSoFFavoriteListSuccess")
         sofUser.clear()
         sofUser.addAll(dataList)
@@ -97,8 +125,3 @@ class SoFListViewModal (private val sofInterator: SoFListIterator) : BaseViewMod
     }
 }
 
-class SoFListViewModalFactory(private val sofInterator: SoFListIterator) : ViewModelProvider.NewInstanceFactory() {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return SoFListViewModal(sofInterator) as T
-    }
-}

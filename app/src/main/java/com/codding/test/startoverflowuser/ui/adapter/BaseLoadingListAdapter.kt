@@ -53,13 +53,22 @@ abstract class  BaseLoadingListAdapter<T> : RecyclerView.Adapter<RecyclerView.Vi
      * Append more data at the end of list
      */
     fun addMoreData(data : MutableList<T>) {
-        // Remove loading view to append more data
-        if (dataList.size > 0) {
-            dataList.removeAt(dataList.size - 1)
+
+        if (data.size > 0) {
+            // Remove loading view to append more data
+            if (dataList.size > 0) {
+                var loadingPosition = dataList.size - 1
+                dataList.removeAt(dataList.size - 1)
+                notifyItemRemoved(loadingPosition)
+            }
+            var startInsertedPostition = dataList.size
+            var insertCount = data.size + 1 // 1 for loading view at the end
+            dataList.addAll(data)
+            dataList.add(null)
+
+            notifyItemRangeInserted(startInsertedPostition, insertCount)
         }
-        dataList.addAll(data)
-        if (data.size > 0) dataList.add(null)
-        notifyDataSetChanged()
+
     }
 
 

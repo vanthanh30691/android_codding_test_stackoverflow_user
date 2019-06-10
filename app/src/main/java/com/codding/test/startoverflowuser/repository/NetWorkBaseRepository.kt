@@ -1,12 +1,26 @@
 package com.codding.test.startoverflowuser.repository
 
+import android.app.Application
 import android.util.Log
+import com.codding.test.startoverflowuser.SofApplication
 import com.codding.test.startoverflowuser.network.CustomResult
+import com.codding.test.startoverflowuser.network.SofApiService
 import retrofit2.Response
 import java.io.IOException
 import java.lang.Exception
 
-open class NetWorkBaseRepository {
+open class NetWorkBaseRepository (application : Application) {
+
+    private var apiService : SofApiService
+
+    init {
+        var sofApp = application as SofApplication
+        apiService = sofApp.getAppComponent().getSofApiService()
+    }
+
+    fun getApiService() : SofApiService {
+        return apiService
+    }
 
     suspend fun <T: Any> safeApiCall(call: suspend () -> Response<T>) : CustomResult<T> {
         var respond = call.invoke()

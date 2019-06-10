@@ -3,17 +3,12 @@ package com.codding.test.startoverflowuser.ui.adapter
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.codding.test.startoverflowuser.R
 import com.codding.test.startoverflowuser.inflate
-import com.codding.test.startoverflowuser.listener.SofUserRowListener
 import com.codding.test.startoverflowuser.modal.SoFUser
-import com.codding.test.startoverflowuser.util.TimeConstant
 import com.squareup.picasso.Picasso
-import java.text.SimpleDateFormat
-import java.util.*
 
 class SofListAdapter(private val picasso: Picasso) : BaseLoadingListAdapter <SoFUser>() {
 
@@ -75,9 +70,10 @@ class SofListAdapter(private val picasso: Picasso) : BaseLoadingListAdapter <SoF
 
 
     fun toogleAdapterMode(mode : Boolean) {
+        var dataSize = getData().size
         getData().clear()
-        notifyDataSetChanged()
         isFavoriteMode = mode
+        notifyItemRangeRemoved(0, dataSize)
     }
 
     /**
@@ -91,7 +87,6 @@ class SofListAdapter(private val picasso: Picasso) : BaseLoadingListAdapter <SoF
         notifyDataSetChanged()
     }
 
-
     class SofListViewHodler(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var favorite = itemView.findViewById<ImageView>(R.id.imgFavorite)
         var avartar = itemView.findViewById<ImageView>(R.id.imgUserAvatar)
@@ -101,7 +96,7 @@ class SofListAdapter(private val picasso: Picasso) : BaseLoadingListAdapter <SoF
         var accessDate = itemView.findViewById<TextView>(R.id.txtLastAccess)
 
         fun updateAvatar(picasso: Picasso, url: String) {
-            Picasso.get().load(url).into(avartar)
+            picasso.load(url).into(avartar)
         }
     }
 

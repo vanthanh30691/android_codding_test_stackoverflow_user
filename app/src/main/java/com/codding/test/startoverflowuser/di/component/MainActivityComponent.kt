@@ -9,6 +9,5 @@ import dagger.Component
 @Component(modules = [MainActivityModule::class], dependencies = [SofComponent::class])
 @MainActivityScope
 interface MainActivityComponent {
-    fun sofListAdapter() : SofListAdapter
     fun injectMainActivity(mainActivity: MainActivity)
 }

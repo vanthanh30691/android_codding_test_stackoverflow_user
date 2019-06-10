@@ -1,20 +1,25 @@
 package com.codding.test.startoverflowuser.viewmodal
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.codding.test.startoverflowuser.interator.ReputationIterator
+import android.app.Application
+import androidx.lifecycle.viewModelScope
 import com.codding.test.startoverflowuser.modal.Reputation
+import com.codding.test.startoverflowuser.network.CustomResult
+import com.codding.test.startoverflowuser.repository.ReputationRespository
 import com.codding.test.startoverflowuser.screenstate.ReputationState
 import com.codding.test.startoverflowuser.screenstate.ScreenState
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.lang.Exception
 
-class ReputationViewModal (private val reputationIterator: ReputationIterator) : BaseViewModal<ReputationState>(),
-    ReputationIterator.ReputationInteratorListener {
+class ReputationViewModal (application: Application) : BaseViewModal<ReputationState>(application) {
 
     var repuList : MutableList<Reputation> = mutableListOf()
-    var lastUserId : String? = null
-    var lastPageSize : Int = 1
+
+
+    private var lastUserId : String? = null
+    private var lastPageSize : Int = 1
+    private var reputationRespository = ReputationRespository(application)
 
     fun refreshData() {
         resetPage()
@@ -26,18 +31,26 @@ class ReputationViewModal (private val reputationIterator: ReputationIterator) :
     fun getReputationList(userId : String, pageSize : Int) {
         Timber.d("getReputationList $userId $pageSize")
         postState(ScreenState.Loading)
-        reputationIterator.loadUserReputation(userId, getCurrentPage(), pageSize, this)
-
+        viewModelScope.launch(Dispatchers.IO) {
+            var result = reputationRespository.getUserReputation(userId, getCurrentPage(), pageSize)
+            when (result) {
+                is CustomResult.Success -> {
+                    if (!result.data.hasMore) onReachedOutOfData()
+                    else onGetUserReputationSuccess(result.data.repuList.toMutableList())
+                }
+                is CustomResult.Error -> onGetDataError(result.errorCode,  result.exception)
+            }
+        }
         lastPageSize = pageSize
         lastUserId = userId
     }
 
-    override fun onGetDataError(errorCode: Int, exception: Exception) {
-        Timber.d("onGetSoFListError")
+    private fun onGetDataError(errorCode: Int, exception: Exception) {
+        Timber.d("onGetSoFListError $errorCode $exception")
         postState(ScreenState.Render(ReputationState.LoadRepuError))
     }
 
-    override fun onGetUserReputationSuccess(dataList: MutableList<Reputation>) {
+    private fun onGetUserReputationSuccess(dataList: MutableList<Reputation>) {
         Timber.d("onGetUserReputationSuccess ${dataList.size}")
 
         repuList.clear()
@@ -46,14 +59,9 @@ class ReputationViewModal (private val reputationIterator: ReputationIterator) :
         increasePage()
     }
 
-    override fun onReachedOutOfData() {
+    private fun onReachedOutOfData() {
         Timber.d("onReachedOutOfData")
         postState(ScreenState.Render(ReputationState.ReachedOutOfData))
     }
 }
 
-class ReputationViewModalFactory(private val interator: ReputationIterator) : ViewModelProvider.NewInstanceFactory() {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return ReputationViewModal(interator) as T
-    }
-}

@@ -4,11 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.codding.test.startoverflowuser.interator.SoFListIterator
 import com.codding.test.startoverflowuser.listener.SofUserRowListener
 import com.codding.test.startoverflowuser.screenstate.ScreenState
 import com.codding.test.startoverflowuser.screenstate.SoFListState
@@ -20,7 +20,6 @@ import com.codding.test.startoverflowuser.SofApplication
 import com.codding.test.startoverflowuser.di.component.DaggerMainActivityComponent
 import com.codding.test.startoverflowuser.ui.adapter.RVEmptyObserver
 import com.codding.test.startoverflowuser.util.*
-import com.codding.test.startoverflowuser.viewmodal.SoFListViewModalFactory
 import kotlinx.android.synthetic.main.bacsic_recycler_view_content.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -67,8 +66,8 @@ class MainActivity : BaseActivity() {
 
 
         // Init variables
-        viewModal = ViewModelProviders.of(this,
-            SoFListViewModalFactory(SoFListIterator(application)))[SoFListViewModal::class.java]
+        viewModal = ViewModelProvider.AndroidViewModelFactory.getInstance(application).
+            create(SoFListViewModal::class.java)
         viewModal.modalState.observe(::getLifecycle, ::updateUI)
 
         // Setup listener
@@ -247,8 +246,13 @@ class MainActivity : BaseActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == IntentCons.INTENT_REQUEST_LOADDING_SCREEN && resultCode == IntentCons.INTENT_RESULT_EXIT_APP) {
-            finish()
+        if (requestCode == IntentCons.INTENT_REQUEST_LOADDING_SCREEN) {
+            if (resultCode == IntentCons.INTENT_RESULT_EXIT_APP) {
+                finish()
+            } else {
+                // Load data done, load favorite user id list
+                viewModal.getFavoriteIdList()
+            }
         }
     }
 

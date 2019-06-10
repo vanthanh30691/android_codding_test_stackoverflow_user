@@ -35,4 +35,6 @@ class SoFUser {
     @SerializedName(ApiConstant.JSON_FIELD_LAST_REPUTATION)
     var reputation = 0
 
+    var isFavorite = false
+
 }

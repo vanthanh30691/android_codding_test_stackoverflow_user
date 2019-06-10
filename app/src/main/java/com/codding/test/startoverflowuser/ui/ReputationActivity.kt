@@ -4,20 +4,18 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.codding.test.startoverflowuser.R
-import com.codding.test.startoverflowuser.interator.ReputationIterator
 import com.codding.test.startoverflowuser.screenstate.ReputationState
 import com.codding.test.startoverflowuser.screenstate.ScreenState
-import com.codding.test.startoverflowuser.screenstate.SoFListState
 import com.codding.test.startoverflowuser.ui.adapter.RVEmptyObserver
 import com.codding.test.startoverflowuser.ui.adapter.RepuListAdapter
 import com.codding.test.startoverflowuser.util.*
 import com.codding.test.startoverflowuser.viewmodal.ReputationViewModal
-import com.codding.test.startoverflowuser.viewmodal.ReputationViewModalFactory
 import kotlinx.android.synthetic.main.bacsic_recycler_view_content.*
 import timber.log.Timber
 
@@ -51,9 +49,8 @@ class ReputationActivity : BaseActivity() {
 
 
         // Init variables
-        viewModal = ViewModelProviders.of(this,
-            ReputationViewModalFactory(ReputationIterator(application))
-        )[ReputationViewModal::class.java]
+        viewModal = ViewModelProvider.AndroidViewModelFactory.getInstance(application).
+            create(ReputationViewModal::class.java)
         viewModal.modalState.observe(::getLifecycle, ::updateUI)
         repuAdapter = RepuListAdapter()
 
