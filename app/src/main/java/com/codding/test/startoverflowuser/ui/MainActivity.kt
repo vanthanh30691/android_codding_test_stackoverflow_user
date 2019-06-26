@@ -17,9 +17,9 @@ import com.codding.test.startoverflowuser.viewmodal.SoFListViewModal
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.codding.test.startoverflowuser.R;
 import com.codding.test.startoverflowuser.SofApplication
-import com.codding.test.startoverflowuser.di.component.DaggerMainActivityComponent
 import com.codding.test.startoverflowuser.ui.adapter.RVEmptyObserver
 import com.codding.test.startoverflowuser.util.*
+import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.bacsic_recycler_view_content.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -47,14 +47,9 @@ class MainActivity : BaseActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        var sofApplication = application as SofApplication
-        var mainActivityComponent = DaggerMainActivityComponent.builder().
-            sofComponent(sofApplication.getAppComponent()).
-            build()
-        mainActivityComponent.injectMainActivity(this)
 
         setupProgessBar()
 

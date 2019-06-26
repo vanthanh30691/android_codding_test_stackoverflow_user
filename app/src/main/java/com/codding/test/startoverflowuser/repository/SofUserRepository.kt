@@ -17,7 +17,7 @@ class SofUserRepository(private val application: Application) : NetWorkBaseRepos
 
     suspend fun getSofUserData(page : Int, pageSize: Int) : CustomResult<SoFUserRespond> {
         var result = safeApiCall(
-            call = { getApiService().getSofUser(page, pageSize).await() }
+            call = { apiService.getSofUser(page, pageSize).await() }
         )
         return result
     }

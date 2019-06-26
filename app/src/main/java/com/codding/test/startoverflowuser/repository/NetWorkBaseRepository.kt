@@ -8,18 +8,17 @@ import com.codding.test.startoverflowuser.network.SofApiService
 import retrofit2.Response
 import java.io.IOException
 import java.lang.Exception
+import javax.inject.Inject
 
 open class NetWorkBaseRepository (application : Application) {
 
-    private var apiService : SofApiService
+
+    @Inject
+    lateinit var apiService : SofApiService
 
     init {
         var sofApp = application as SofApplication
-        apiService = sofApp.getAppComponent().getSofApiService()
-    }
-
-    fun getApiService() : SofApiService {
-        return apiService
+        apiService = sofApp.getAppComponent().getSofApi()
     }
 
     suspend fun <T: Any> safeApiCall(call: suspend () -> Response<T>) : CustomResult<T> {

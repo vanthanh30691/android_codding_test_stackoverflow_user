@@ -1,15 +1,27 @@
 package com.codding.test.startoverflowuser.di.component
 
-import com.codding.test.startoverflowuser.di.module.PicassoModule
-import com.codding.test.startoverflowuser.di.module.SofModule
+import android.app.Application
+import com.codding.test.startoverflowuser.SofApplication
+import com.codding.test.startoverflowuser.di.module.*
 import com.codding.test.startoverflowuser.network.SofApiService
-import com.squareup.picasso.Picasso
+import dagger.BindsInstance
 import dagger.Component
+import dagger.android.AndroidInjectionModule
 import javax.inject.Singleton
 
-@Component (modules = [SofModule::class, PicassoModule::class])
+@Component (modules = [SofModule::class, PicassoModule::class, AppModule::class,
+    AndroidInjectionModule::class, ActivityBuilder::class, MainActivityModule::class])
 @Singleton
 interface SofComponent {
-    fun getSofApiService() : SofApiService
-    fun getPicasso() : Picasso
+
+    fun getSofApi() : SofApiService
+
+    @Component.Builder
+    interface Builder {
+        @BindsInstance
+        fun application(app: Application) : Builder
+        fun build() : SofComponent
+    }
+
+    fun inject(app : SofApplication)
 }

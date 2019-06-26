@@ -11,7 +11,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import timber.log.Timber
 import java.io.File
 
-@Module(includes = [AppContextModule::class])
+@Module(includes = [AppModule::class])
 class OkHttpClientModule {
 
     @Provides

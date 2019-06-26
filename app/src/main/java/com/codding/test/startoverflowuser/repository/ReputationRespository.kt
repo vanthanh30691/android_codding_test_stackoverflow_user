@@ -9,7 +9,7 @@ class ReputationRespository(application: Application) : NetWorkBaseRepository(ap
 
     suspend fun getUserReputation(userId : String, page : Int, pageSize: Int) : CustomResult<ReputationRespond> {
         var result = safeApiCall(
-            call = { getApiService().getUserReputation(userId, page, pageSize).await() }
+            call = { apiService.getUserReputation(userId, page, pageSize).await() }
         )
         return result
     }

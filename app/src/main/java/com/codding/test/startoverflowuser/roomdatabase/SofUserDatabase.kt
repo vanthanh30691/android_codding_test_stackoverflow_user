@@ -8,7 +8,7 @@ import com.codding.test.startoverflowuser.modal.SoFUser
 import com.codding.test.startoverflowuser.roomdatabase.dao.SofUserDao
 import com.codding.test.startoverflowuser.util.RoomConstant
 
-@Database(entities = arrayOf(SoFUser::class), version = RoomConstant.SOF_DATABASE_VERSION)
+@Database(entities = arrayOf(SoFUser::class), version = RoomConstant.SOF_DATABASE_VERSION, exportSchema = false)
 abstract class SofUserDatabase : RoomDatabase() {
     abstract fun sofUserDao() : SofUserDao
 
